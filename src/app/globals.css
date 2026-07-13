@@ -1,0 +1,183 @@
+@import "tailwindcss";
+
+/* ============================================================
+   CRT Design System — paleta refinada del branding actual
+   Base: ISESA template, adaptado a CRT (azul marino + ice cyan)
+   ============================================================ */
+
+:root {
+  /* Marca — azul marino refinado del branding actual */
+  --primary: #0A2540;
+  --primary-dark: #051B30;
+  --primary-light: #1E4D80;
+
+  /* Accent — ice cyan (refrigeración / frío) */
+  --accent: #06B6D4;
+  --accent-dark: #0891B2;
+  --accent-light: #22D3EE;
+
+  /* Soportes — para diferenciar verticales del catálogo */
+  --vert-hielo: #06B6D4;     /* Hielo y bebidas — cyan */
+  --vert-refri: #1E4D80;     /* Refrigeración retail — navy claro */
+  --vert-food: #4F84BC;      /* Foodvenience — azul cielo dusty (más claro que refri) */
+
+  /* Neutrales */
+  --black: #1F1F1F;
+  --secondary: #696C70;
+  --secondary2: #A0A0A0;
+  --white: #ffffff;
+  --surface: #F7F7F7;
+  --line: #E9E9E9;
+  --outline: rgba(0, 0, 0, 0.15);
+
+  /* Feedback */
+  --red: #DB4444;
+  --success: #3DAB25;
+  --yellow: #ECB018;
+}
+
+@theme inline {
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-light: var(--primary-light);
+  --color-accent: var(--accent);
+  --color-accent-dark: var(--accent-dark);
+  --color-accent-light: var(--accent-light);
+  --color-vert-hielo: var(--vert-hielo);
+  --color-vert-refri: var(--vert-refri);
+  --color-vert-food: var(--vert-food);
+  --color-black: var(--black);
+  --color-secondary: var(--secondary);
+  --color-secondary2: var(--secondary2);
+  --color-white: var(--white);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --color-red: var(--red);
+  --color-success: var(--success);
+  --color-yellow: var(--yellow);
+  --font-sans: var(--font-body), "DM Sans", sans-serif;
+  --font-display: var(--font-display), "Manrope", sans-serif;
+}
+
+/* ---- Reset ---- */
+html, body {
+  font-size: 16px;
+  line-height: 26px;
+  color: var(--black);
+  font-weight: 400;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  font-family: var(--font-body), "DM Sans", sans-serif;
+}
+
+/* ---- Container ---- */
+.container {
+  max-width: 1322px !important;
+  width: 100%;
+  padding-right: 16px;
+  padding-left: 16px;
+  margin: 0 auto;
+}
+
+/* ---- Typography ----
+   Display font (Space Grotesk) en headings y subtítulos.
+   Body font (DM Sans) en text-title, body1, captions, botones.
+*/
+.text-sub-display { font-family: var(--font-display), "Manrope", sans-serif; font-size: 18px; font-weight: 600; line-height: 24px; letter-spacing: 1.8px; text-transform: uppercase; }
+.text-display { font-family: var(--font-display), "Manrope", sans-serif; font-size: 80px; font-weight: 700; line-height: 88px; text-transform: capitalize; letter-spacing: -0.02em; }
+.heading1 { font-family: var(--font-display), "Manrope", sans-serif; font-size: 56px; line-height: 68px; font-weight: 700; letter-spacing: -0.01em; }
+.heading2 { font-family: var(--font-display), "Manrope", sans-serif; font-size: 44px; line-height: 50px; font-weight: 700; letter-spacing: -0.01em; }
+.heading3 { font-family: var(--font-display), "Manrope", sans-serif; font-size: 36px; line-height: 40px; font-weight: 700; }
+.heading4 { font-family: var(--font-display), "Manrope", sans-serif; font-size: 30px; line-height: 42px; font-weight: 700; }
+.heading5 { font-family: var(--font-display), "Manrope", sans-serif; font-size: 24px; line-height: 30px; font-weight: 700; }
+.heading6 { font-family: var(--font-display), "Manrope", sans-serif; font-size: 20px; line-height: 28px; font-weight: 700; }
+.text-title { font-size: 16px; line-height: 24px; font-weight: 500; }
+.body1 { font-size: 18px; line-height: 28px; font-weight: 400; }
+.text-button { font-size: 16px; line-height: 26px; font-weight: 600; }
+.text-button-uppercase { font-size: 14px; line-height: 20px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.caption1 { font-size: 14px; line-height: 22px; font-weight: 400; }
+.caption2 { font-size: 12px; line-height: 16px; font-weight: 400; }
+
+/* ---- Buttons ---- */
+.btn-primary, .btn-accent, .btn-white, .btn-outline-white, .btn-outline-primary, .button-main {
+  font-size: 14px; line-height: 20px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 16px 40px; border-radius: 12px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  cursor: pointer; transition: all ease 0.4s; text-align: center;
+  border: 2px solid transparent;
+}
+
+/* Primary — navy */
+.btn-primary { background-color: var(--primary); color: var(--white); border-color: var(--primary); }
+.btn-primary:hover { background-color: var(--black); color: var(--white); border-color: var(--black); transform: scale(1.05); }
+
+/* Accent — ice cyan */
+.btn-accent { background-color: var(--accent); color: var(--white); border-color: var(--accent); }
+.btn-accent:hover { background-color: var(--black); color: var(--white); border-color: var(--black); transform: scale(1.05); }
+
+/* White */
+.btn-white { background-color: var(--white); color: var(--primary); border-color: var(--white); }
+.btn-white:hover { background-color: var(--black); color: var(--white); border-color: var(--black); transform: scale(1.05); }
+
+/* Outline white — hover: negro, sin outline */
+.btn-outline-white { background-color: transparent; color: var(--white); border-color: var(--white); }
+.btn-outline-white:hover { background-color: var(--black); color: var(--white); border-color: var(--black); transform: scale(1.05); }
+
+/* Outline primary — hover: negro, sin outline */
+.btn-outline-primary { background-color: transparent; color: var(--primary); border-color: var(--primary); }
+.btn-outline-primary:hover { background-color: var(--black); color: var(--white); border-color: var(--black); transform: scale(1.05); }
+
+/* ---- Card hover ---- */
+.product-item { display: block; cursor: pointer; }
+.product-item .product-thumb {
+  position: relative; overflow: hidden; border-radius: 16px; background: var(--white);
+  border: 1px solid var(--line);
+  transition: box-shadow 0.3s ease;
+}
+.product-item:hover .product-thumb {
+  box-shadow: 0 10px 25px rgba(10, 37, 64, 0.12);
+}
+.product-item .product-name { transition: color 0.3s ease; }
+.product-item:hover .product-name { color: var(--primary); }
+
+/* ---- Tags ---- */
+.tag-pill {
+  background-color: var(--accent); color: #fff;
+  font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+  padding: 2px 12px; border-radius: 100px;
+}
+
+/* ---- Shadows ---- */
+.shadow-card { box-shadow: 0 4px 14px rgba(10, 37, 64, 0.08); }
+.shadow-card-lg { box-shadow: 0 10px 25px rgba(10, 37, 64, 0.12); }
+
+/* ---- Responsive Tablet ---- */
+@media (max-width: 1023.99px) {
+  .text-sub-display { font-size: 16px; line-height: 24px; letter-spacing: 1.1px; }
+  .text-display { font-size: 42px; line-height: 50px; }
+  .heading1 { font-size: 36px; line-height: 48px; }
+  .heading2 { font-size: 32px; line-height: 40px; }
+  .heading3 { font-size: 30px; line-height: 38px; }
+  .heading4 { font-size: 26px; line-height: 32px; }
+  .heading5 { font-size: 22px; line-height: 28px; }
+  .heading6 { font-size: 18px; line-height: 26px; }
+  .btn-primary, .btn-accent, .btn-white, .btn-outline-white, .btn-outline-primary, .button-main { padding: 12px 24px; border-radius: 10px; }
+}
+
+/* ---- Responsive Mobile ---- */
+@media (max-width: 767.98px) {
+  html, body { font-size: 14px; line-height: 24px; }
+  .text-sub-display { font-size: 12px; line-height: 16px; letter-spacing: 1.1px; }
+  .text-display { font-size: 24px; line-height: 30px; }
+  .heading1 { font-size: 24px; line-height: 32px; }
+  .heading2 { font-size: 22px; line-height: 30px; }
+  .heading3 { font-size: 20px; line-height: 28px; }
+  .heading4 { font-size: 18px; line-height: 28px; }
+  .heading5 { font-size: 16px; line-height: 26px; }
+  .heading6 { font-size: 16px; line-height: 24px; }
+  .text-title { font-size: 14px; line-height: 20px; }
+  .body1 { font-size: 16px; line-height: 26px; }
+  .caption1 { font-size: 13px; line-height: 20px; }
+  .btn-primary, .btn-accent, .btn-white, .btn-outline-white, .btn-outline-primary, .button-main { font-size: 12px; line-height: 16px; padding: 10px 16px; border-radius: 8px; }
+}
