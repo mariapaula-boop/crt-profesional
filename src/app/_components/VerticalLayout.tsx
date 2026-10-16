@@ -6,52 +6,33 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 import Navbar, { type NavbarActiveItem } from "./Navbar";
 import Footer from "./Footer";
+import type { ValoresDe } from "@/lib/cms/campos";
+import type { giroPagina } from "@/contenido/giros";
+import type { Ajustes } from "@/contenido/ajustes";
+import type { ProductoPro } from "@/lib/productos";
 
-export type Categoria = {
-  nombre: string;
-  icon: ReactNode;
-  img: string;
-};
+export type ContenidoGiro = ValoresDe<ReturnType<typeof giroPagina>["campos"]>;
+
+/** Artículo del blog para las tarjetas (los 3 más recientes). */
+export type TarjetaBlog = { slug: string; titulo: string; categoria: string; fecha: string };
 
 export type VerticalLayoutProps = {
   /** Cuál vertical se ve activa en la navbar */
   verticalActiva: NavbarActiveItem;
-  /** Texto del pill del hero (estructural, no marketing) */
-  pillText: string;
   /** Icono del pill */
   pillIcon: ReactNode;
-  /** Palabra resaltada del H1: "cafetería", "restaurante", "panadería", "heladería" */
-  h1Word: string;
-  /** Imagen principal del hero */
-  heroImg: string;
-  heroImgAlt: string;
-  /** Categorías de equipo (del brief) */
-  categorias: Categoria[];
-  /** Strip "también representamos" — array de nombres (ITV, CRT confirmados; resto "Lorem") */
-  otrasMarcas: string[];
-  /** Imagen del bloque "Marca destacada" */
-  marcaImg: string;
-  marcaImgAlt: string;
-  /** Imagen del showroom (placeholder por ahora) */
-  showroomImg: string;
-  /** Texto del botón CTA final */
-  ctaButtonText: string;
+  /** Íconos de las tarjetas de categorías (por posición) */
+  iconos: ReactNode[];
+  /** Textos e imágenes del administrador (src/contenido/giros.ts) */
+  c: ContenidoGiro;
+  a: Ajustes;
+  /** Productos publicados con este giro (máx. 4); vacío = tarjetas de ejemplo */
+  productos: ProductoPro[];
+  posts: TarjetaBlog[];
 };
 
-export default function VerticalLayout({
-  verticalActiva,
-  pillText,
-  pillIcon,
-  h1Word,
-  heroImg,
-  heroImgAlt,
-  categorias,
-  otrasMarcas,
-  marcaImg,
-  marcaImgAlt,
-  showroomImg,
-  ctaButtonText,
-}: VerticalLayoutProps) {
+export default function VerticalLayout({ verticalActiva, pillIcon, iconos, c, a, productos, posts }: VerticalLayoutProps) {
+  const h1Word = c.hero.palabra;
   return (
     <>
       <Navbar activo={verticalActiva} />
@@ -94,38 +75,34 @@ export default function VerticalLayout({
                 style={{ background: "white", color: "var(--accent-dark)", border: "1px solid var(--line)" }}
               >
                 {pillIcon}
-                {pillText}
+                {c.hero.pill}
               </span>
 
               <h1 className="heading1 mb-6" style={{ color: "var(--primary)" }}>
-                Equipa tu{" "}
+                {c.hero.titulo}{" "}
                 <span style={{ color: "var(--accent-dark)" }}>{h1Word}</span>.
               </h1>
 
               <p className="body1 mb-9 max-w-xl" style={{ color: "var(--secondary)" }}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                {c.hero.texto}
               </p>
 
               <div className="flex flex-wrap gap-3">
-                <a href="#" className="btn-primary">
+                <a href={a.waLink} target="_blank" rel="noopener" className="btn-primary">
                   <WhatsappLogo size={16} weight="fill" />
-                  Hablar con un asesor
+                  {c.hero.botonWhatsapp}
                 </a>
                 <a href="#categorias" className="btn-outline-primary">
-                  Ver equipos
+                  {c.hero.botonEquipos}
                   <ArrowRight size={16} weight="bold" />
                 </a>
               </div>
 
               <div className="grid grid-cols-3 gap-6 mt-12 pt-8 border-t" style={{ borderColor: "var(--line)" }}>
-                {[
-                  { value: "Lorem", label: "ipsum dolor sit" },
-                  { value: "Lorem", label: "ipsum dolor sit" },
-                  { value: "Showroom", label: "Monterrey, NL" },
-                ].map((s, i) => (
+                {c.hero.datos.map((s, i) => (
                   <div key={i}>
-                    <div className="heading5" style={{ color: "var(--primary)" }}>{s.value}</div>
-                    <div className="caption1" style={{ color: "var(--secondary)" }}>{s.label}</div>
+                    <div className="heading5" style={{ color: "var(--primary)" }}>{s.valor}</div>
+                    <div className="caption1" style={{ color: "var(--secondary)" }}>{s.texto}</div>
                   </div>
                 ))}
               </div>
@@ -133,14 +110,14 @@ export default function VerticalLayout({
 
             <div className="lg:col-span-5 relative">
               <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl">
-                <img src={heroImg} alt={heroImgAlt} className="w-full h-full object-cover" />
+                <img src={c.hero.imagen} alt={c.hero.imagenAlt} className="w-full h-full object-cover" />
                 <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 50%, rgba(10,37,64,0.9) 100%)" }} />
                 <div className="absolute bottom-6 left-6 right-6">
                   <span className="inline-block text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-3" style={{ background: "var(--accent)", color: "var(--primary-dark)" }}>
-                    Lorem ipsum
+                    {c.hero.tarjetaEtiqueta}
                   </span>
                   <p className="text-white text-2xl font-bold leading-tight" style={{ fontFamily: "var(--font-display)" }}>
-                    Lorem<br /><span className="text-sm font-medium opacity-80">Lorem ipsum dolor sit amet</span>
+                    {c.hero.tarjetaTitulo}<br /><span className="text-sm font-medium opacity-80">{c.hero.tarjetaTexto}</span>
                   </p>
                 </div>
               </div>
@@ -150,7 +127,7 @@ export default function VerticalLayout({
                 style={{ background: "var(--accent)", color: "var(--primary-dark)", fontFamily: "var(--font-display)" }}
               >
                 <Star size={20} weight="fill" />
-                <span className="mt-1">Lorem</span>
+                <span className="mt-1">{c.hero.insignia}</span>
               </div>
             </div>
           </div>
@@ -162,21 +139,21 @@ export default function VerticalLayout({
         <div className="container">
           <div className="max-w-2xl mb-14">
             <span className="text-sub-display" style={{ color: "var(--accent-dark)" }}>
-              Categorías de equipo
+              {c.categorias.etiqueta}
             </span>
             <h2 className="heading2 mt-3 mb-4" style={{ color: "var(--primary)" }}>
-              Lo que necesitas para tu <span className="lowercase">{h1Word}</span>.
+              {c.categorias.titulo} <span className="lowercase">{h1Word}</span>.
             </h2>
             <p className="body1" style={{ color: "var(--secondary)" }}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.
+              {c.categorias.texto}
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {categorias.map((cat, i) => (
+            {c.categorias.items.map((cat, i) => (
               <a
                 key={i}
-                href="#"
+                href={cat.enlace || "#"}
                 className="group rounded-3xl overflow-hidden transition hover:-translate-y-1 hover:shadow-xl bg-white"
                 style={{ border: "1px solid var(--line)" }}
               >
@@ -187,19 +164,19 @@ export default function VerticalLayout({
                     className="absolute top-4 left-4 w-11 h-11 rounded-full flex items-center justify-center backdrop-blur-md"
                     style={{ background: "rgba(255,255,255,0.95)", color: "var(--accent-dark)" }}
                   >
-                    {cat.icon}
+                    {iconos[i % iconos.length]}
                   </div>
                 </div>
                 <div className="p-6">
                   <h3 className="heading6 mb-2" style={{ color: "var(--primary)" }}>{cat.nombre}</h3>
                   <p className="caption1 mb-3" style={{ color: "var(--secondary)" }}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    {cat.desc}
                   </p>
                   <p className="caption2 font-mono mb-4 pb-3 border-b" style={{ color: "var(--accent-dark)", borderColor: "var(--line)" }}>
-                    Lorem ipsum · dolor sit · amet · consectetur
+                    {cat.detalle}
                   </p>
                   <span className="inline-flex items-center gap-1 text-sm font-semibold transition group-hover:gap-2" style={{ color: "var(--primary)" }}>
-                    Ver línea
+                    {c.categorias.boton}
                     <ArrowRight size={14} weight="bold" />
                   </span>
                 </div>
@@ -215,22 +192,17 @@ export default function VerticalLayout({
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <span className="text-sub-display" style={{ color: "var(--accent-light)" }}>
-                Marca destacada
+                {c.marca.etiqueta}
               </span>
               <h2 className="heading2 mt-3 mb-5 text-white">
-                Lorem.
+                {c.marca.titulo}
               </h2>
               <p className="body1 mb-8 text-white/75">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                {c.marca.texto}
               </p>
 
               <div className="space-y-4 mb-9">
-                {[
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-                  "Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt",
-                  "Lorem ipsum dolor sit amet, ut labore et dolore magna",
-                  "Showroom en Monterrey para probar antes de comprar",
-                ].map((b, i) => (
+                {c.marca.puntos.map((b, i) => (
                   <div key={i} className="flex items-start gap-3">
                     <div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: "var(--accent)", color: "var(--primary-dark)" }}>
                       <Check size={12} weight="bold" />
@@ -240,22 +212,22 @@ export default function VerticalLayout({
                 ))}
               </div>
 
-              <a href="#" className="btn-accent">
-                Ver línea completa
+              <a href={c.marca.enlace || "#"} className="btn-accent">
+                {c.marca.boton}
                 <ArrowRight size={16} weight="bold" />
               </a>
             </div>
 
             <div className="relative">
               <div className="aspect-square rounded-3xl overflow-hidden">
-                <img src={marcaImg} alt={marcaImgAlt} className="w-full h-full object-cover" />
+                <img src={c.marca.imagen} alt={c.marca.imagenAlt} className="w-full h-full object-cover" />
               </div>
               <div className="absolute bottom-6 -left-6 px-5 py-4 rounded-2xl shadow-xl max-w-xs bg-white">
                 <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: "var(--accent-dark)" }}>
-                  Lorem ipsum
+                  {c.marca.recuadroTitulo}
                 </p>
                 <p className="caption1" style={{ color: "var(--black)" }}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.
+                  {c.marca.recuadroTexto}
                 </p>
               </div>
             </div>
@@ -264,10 +236,10 @@ export default function VerticalLayout({
           {/* Strip "También representamos" */}
           <div className="mt-16 pt-10 border-t" style={{ borderColor: "rgba(255,255,255,0.12)" }}>
             <p className="text-xs uppercase tracking-[3px] mb-6 text-center text-white/50 font-semibold">
-              También representamos
+              {c.marca.otrasTitulo}
             </p>
             <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6">
-              {otrasMarcas.map((m, i) => (
+              {c.marca.otras.map((m, i) => (
                 <span
                   key={i}
                   className="text-2xl lg:text-3xl font-bold tracking-tight text-white/40 hover:text-white/70 transition"
@@ -287,30 +259,78 @@ export default function VerticalLayout({
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
             <div className="max-w-2xl">
               <span className="text-sub-display" style={{ color: "var(--accent-dark)" }}>
-                Equipos destacados
+                {c.equipos.etiqueta}
               </span>
               <h2 className="heading2 mt-3 mb-4" style={{ color: "var(--primary)" }}>
-                Lo esencial para arrancar.
+                {c.equipos.titulo}
               </h2>
               <p className="body1" style={{ color: "var(--secondary)" }}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                {c.equipos.texto}
               </p>
             </div>
-            <a href="#" className="inline-flex items-center gap-2 text-sm font-semibold transition hover:gap-3" style={{ color: "var(--primary)" }}>
-              Ver catálogo
+            <a href={c.equipos.enlace || "#"} className="inline-flex items-center gap-2 text-sm font-semibold transition hover:gap-3" style={{ color: "var(--primary)" }}>
+              {c.equipos.boton}
               <ArrowRight size={16} weight="bold" />
             </a>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {[0, 1, 2, 3].map((i) => (
+            {productos.length > 0 ? productos.map((p, i) => (
+              <article
+                key={p.slug}
+                className="group rounded-2xl overflow-hidden transition hover:-translate-y-1 hover:shadow-xl bg-white"
+                style={{ border: "1px solid var(--line)" }}
+              >
+                <div className="aspect-square overflow-hidden relative" style={{ background: "var(--surface)" }}>
+                  {p.img ? <img src={p.img} alt={p.nombre} loading="lazy" className="w-full h-full object-contain p-4 group-hover:scale-105 transition duration-500" /> : null}
+                  {p.etiqueta && (
+                    <span
+                      className="absolute top-3 left-3 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full"
+                      style={{ background: p.color || (i === 0 ? "var(--accent)" : "var(--primary)"), color: "white" }}
+                    >
+                      {p.etiqueta}
+                    </span>
+                  )}
+                </div>
+                <div className="p-5">
+                  <h3 className="text-title font-bold mb-2" style={{ color: "var(--primary)" }}>{p.nombre}</h3>
+                  {p.precio && <p className="caption1 font-semibold mb-1" style={{ color: "var(--accent-dark)" }}>{p.precio}</p>}
+                  <p className="caption2 leading-snug mb-4" style={{ color: "var(--secondary)" }}>
+                    {p.resumen}
+                  </p>
+                  <div className="flex gap-2">
+                    {(p.ficha || p.tienda) && (
+                      <a
+                        href={p.ficha || p.tienda}
+                        target="_blank"
+                        rel="noopener"
+                        className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition hover:opacity-90"
+                        style={{ background: "var(--surface)", color: "var(--primary)" }}
+                      >
+                        <FileText size={11} weight="bold" /> {p.ficha ? "Ficha" : "Ver"}
+                      </a>
+                    )}
+                    <a
+                      href={a.waLink}
+                      target="_blank"
+                      rel="noopener"
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition hover:opacity-90"
+                      style={{ background: "var(--accent)", color: "white" }}
+                    >
+                      <WhatsappLogo size={11} weight="fill" /> Cotizar
+                    </a>
+                  </div>
+                </div>
+              </article>
+            )) : (
+            [0, 1, 2, 3].map((i) => (
               <article
                 key={i}
                 className="group rounded-2xl overflow-hidden transition hover:-translate-y-1 hover:shadow-xl bg-white"
                 style={{ border: "1px solid var(--line)" }}
               >
                 <div className="aspect-square overflow-hidden relative" style={{ background: "var(--surface)" }}>
-                  <img src={heroImg} alt="Lorem ipsum" loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                  <img src={c.hero.imagen} alt="Lorem ipsum" loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
                   <span
                     className="absolute top-3 left-3 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full"
                     style={{ background: i === 0 ? "var(--accent)" : "var(--primary)", color: "white" }}
@@ -341,7 +361,8 @@ export default function VerticalLayout({
                   </div>
                 </div>
               </article>
-            ))}
+            ))
+            )}
           </div>
         </div>
       </section>
@@ -353,7 +374,7 @@ export default function VerticalLayout({
             <div className="relative">
               <div className="aspect-[5/4] rounded-3xl overflow-hidden shadow-xl">
                 <img
-                  src={showroomImg}
+                  src={c.showroom.imagen}
                   alt="Showroom CRT Profesional en Monterrey, Nuevo León"
                   className="w-full h-full object-cover"
                 />
@@ -364,30 +385,25 @@ export default function VerticalLayout({
               >
                 <MapPin size={28} weight="duotone" style={{ color: "var(--accent-light)" }} />
                 <div>
-                  <p className="caption2 font-bold uppercase tracking-wider" style={{ color: "var(--accent-light)" }}>Showroom</p>
-                  <p className="text-title font-semibold">Monterrey, Nuevo León</p>
+                  <p className="caption2 font-bold uppercase tracking-wider" style={{ color: "var(--accent-light)" }}>{c.showroom.etiquetaFoto}</p>
+                  <p className="text-title font-semibold">{c.showroom.ciudad}</p>
                 </div>
               </div>
             </div>
 
             <div>
               <span className="text-sub-display" style={{ color: "var(--accent-dark)" }}>
-                Showroom Monterrey
+                {c.showroom.etiqueta}
               </span>
               <h2 className="heading2 mt-3 mb-5" style={{ color: "var(--primary)" }}>
-                Ven a probar antes de comprar.
+                {c.showroom.titulo}
               </h2>
               <p className="body1 mb-6" style={{ color: "var(--secondary)" }}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.
+                {c.showroom.texto}
               </p>
 
               <ul className="space-y-3 mb-9">
-                {[
-                  "Lorem ipsum dolor sit amet consectetur",
-                  "Lorem ipsum dolor sit amet adipiscing",
-                  "Lorem ipsum dolor sit amet incididunt",
-                  "Lorem ipsum dolor sit amet veniam",
-                ].map((b, i) => (
+                {c.showroom.puntos.map((b, i) => (
                   <li key={i} className="flex items-center gap-3" style={{ color: "var(--black)" }}>
                     <Check size={18} weight="bold" style={{ color: "var(--accent-dark)" }} />
                     {b}
@@ -396,13 +412,13 @@ export default function VerticalLayout({
               </ul>
 
               <div className="flex flex-wrap gap-3">
-                <a href="#" className="btn-primary">
+                <a href={a.waLink} target="_blank" rel="noopener" className="btn-primary">
                   <ChatCircleText size={16} weight="duotone" />
-                  Agendar visita
+                  {c.showroom.botonAgendar}
                 </a>
-                <a href="#" className="btn-outline-primary">
+                <a href={c.showroom.mapa || "#"} target={c.showroom.mapa ? "_blank" : undefined} rel="noopener" className="btn-outline-primary">
                   <MapPin size={16} weight="bold" />
-                  Ver en mapa
+                  {c.showroom.botonMapa}
                 </a>
               </div>
             </div>
@@ -424,17 +440,17 @@ export default function VerticalLayout({
             <div className="relative z-10 grid md:grid-cols-[1fr_auto] gap-8 items-center">
               <div>
                 <span className="text-sub-display" style={{ color: "var(--accent-light)" }}>
-                  ¿Eres distribuidor?
+                  {c.distribuidores.etiqueta}
                 </span>
                 <h2 className="heading3 mt-3 mb-3 text-white">
-                  Accede a fichas extendidas, manuales y guías de instalación.
+                  {c.distribuidores.titulo}
                 </h2>
                 <p className="caption1 max-w-xl text-white/75">
-                  Si vendes equipo CRT en tu zona, regístrate para acceder al portal de distribuidores con material técnico completo y soporte directo.
+                  {c.distribuidores.texto}
                 </p>
               </div>
-              <a href="#" className="btn-accent shrink-0">
-                Registrar mi negocio
+              <a href="/distribuidores" className="btn-accent shrink-0">
+                {c.distribuidores.boton}
                 <ArrowRight size={16} weight="bold" />
               </a>
             </div>
@@ -448,20 +464,39 @@ export default function VerticalLayout({
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
             <div className="max-w-2xl">
               <span className="text-sub-display" style={{ color: "var(--accent-dark)" }}>
-                Blog y recursos
+                {c.blog.etiqueta}
               </span>
               <h2 className="heading2 mt-3 mb-4" style={{ color: "var(--primary)" }}>
-                Tips para tu <span className="lowercase">{h1Word}</span>.
+                {c.blog.titulo} <span className="lowercase">{h1Word}</span>.
               </h2>
             </div>
-            <a href="#" className="inline-flex items-center gap-2 text-sm font-semibold transition hover:gap-3" style={{ color: "var(--primary)" }}>
-              Ver blog completo
+            <a href="/blog" className="inline-flex items-center gap-2 text-sm font-semibold transition hover:gap-3" style={{ color: "var(--primary)" }}>
+              {c.blog.boton}
               <ArrowRight size={16} weight="bold" />
             </a>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {[0, 1, 2].map((i) => (
+            {posts.length > 0 ? posts.slice(0, 3).map((post) => (
+              <a
+                key={post.slug}
+                href={`/blog/${post.slug}`}
+                className="group rounded-3xl overflow-hidden p-7 transition hover:-translate-y-1 hover:shadow-xl bg-white"
+                style={{ border: "1px solid var(--line)" }}
+              >
+                <span className="inline-block text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full mb-4" style={{ background: "rgba(6,182,212,0.12)", color: "var(--accent-dark)" }}>
+                  {post.categoria}
+                </span>
+                <h3 className="heading6 mb-4 leading-tight group-hover:opacity-80 transition" style={{ color: "var(--primary)" }}>
+                  {post.titulo}
+                </h3>
+                <div className="flex items-center justify-between pt-4 border-t" style={{ borderColor: "var(--line)" }}>
+                  <span className="caption2" style={{ color: "var(--secondary)" }}>{post.fecha}</span>
+                  <CaretRight size={14} weight="bold" style={{ color: "var(--primary)" }} />
+                </div>
+              </a>
+            )) : (
+            [0, 1, 2].map((i) => (
               <a
                 key={i}
                 href="#"
@@ -479,7 +514,8 @@ export default function VerticalLayout({
                   <CaretRight size={14} weight="bold" style={{ color: "var(--primary)" }} />
                 </div>
               </a>
-            ))}
+            ))
+            )}
           </div>
         </div>
       </section>
@@ -490,19 +526,19 @@ export default function VerticalLayout({
           <div className="max-w-3xl mx-auto text-center">
             <Lightning size={42} weight="duotone" style={{ color: "var(--accent-light)" }} className="mx-auto mb-5" />
             <h2 className="heading2 mb-4 text-white">
-              Cotiza tu <span className="lowercase">{h1Word}</span>.
+              {c.cta.titulo} <span className="lowercase">{h1Word}</span>.
             </h2>
             <p className="body1 mb-8 text-white/75">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua, quis nostrud exercitation ullamco laboris.
+              {c.cta.texto}
             </p>
             <div className="flex flex-wrap justify-center gap-3">
-              <a href="#" className="btn-accent">
+              <a href={a.waLink} target="_blank" rel="noopener" className="btn-accent">
                 <WhatsappLogo size={16} weight="fill" />
-                {ctaButtonText}
+                {c.cta.botonWhatsapp}
               </a>
-              <a href="#" className="btn-outline-white">
+              <a href={a.telLink} className="btn-outline-white">
                 <Phone size={16} weight="duotone" />
-                Llamar al showroom
+                {c.cta.botonLlamar}
               </a>
             </div>
           </div>

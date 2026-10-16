@@ -3,10 +3,14 @@ import {
   Handshake, FileText, Wrench, ChartBar,
   Check, Envelope, Phone, NumberCircleOne, NumberCircleTwo, NumberCircleThree,
 } from "@phosphor-icons/react/dist/ssr";
+import { contenido } from "@/lib/cms";
+import { distribuidores } from "@/contenido/secundarias";
+import { getAjustes } from "@/contenido/ajustes";
+import { metadataCon } from "@/contenido/comun";
 import Navbar from "../_components/Navbar";
 import Footer from "../_components/Footer";
 
-export const metadata = {
+const metadataBase = {
   title: "Sé distribuidor CRT Profesional",
   description:
     "Si tu negocio vende equipo profesional para cafeterías, restaurantes, panaderías o heladerías — únete a la red de distribuidores CRT Profesional. Soporte técnico, fichas y material de venta.",
@@ -20,51 +24,31 @@ export const metadata = {
   },
 };
 
-// Beneficios — mencionados por Rubén en junta 19-feb:
-// "información técnica en cómo usar mantenimiento, cómo instalar características del equipo"
-// + Arlet 20-mar: "es una página de apoyo para ellos, para su información"
-const beneficios = [
-  {
-    titulo: "Fichas técnicas",
-    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.",
-    icon: <FileText size={28} weight="duotone" />,
-  },
-  {
-    titulo: "Guías de instalación",
-    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.",
-    icon: <Wrench size={28} weight="duotone" />,
-  },
-  {
-    titulo: "Material de venta",
-    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.",
-    icon: <ChartBar size={28} weight="duotone" />,
-  },
-  {
-    titulo: "Soporte directo",
-    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.",
-    icon: <Handshake size={28} weight="duotone" />,
-  },
+export async function generateMetadata() {
+  const c = await contenido(distribuidores);
+  return metadataCon(c.seo, distribuidores.campos.seo.defecto, metadataBase);
+}
+
+// Textos: src/contenido/secundarias.ts (editables en el administrador). Aquí los íconos.
+// Beneficios — mencionados por Rubén en junta 19-feb: "información técnica en cómo usar
+// mantenimiento, cómo instalar características del equipo" + Arlet 20-mar: "es una página
+// de apoyo para ellos, para su información".
+const iconosBeneficios = [
+  <FileText key="0" size={28} weight="duotone" />,
+  <Wrench key="1" size={28} weight="duotone" />,
+  <ChartBar key="2" size={28} weight="duotone" />,
+  <Handshake key="3" size={28} weight="duotone" />,
+];
+const iconosPasos = [
+  <NumberCircleOne key="0" size={32} weight="duotone" />,
+  <NumberCircleTwo key="1" size={32} weight="duotone" />,
+  <NumberCircleThree key="2" size={32} weight="duotone" />,
 ];
 
-const proceso = [
-  {
-    n: <NumberCircleOne size={32} weight="duotone" />,
-    titulo: "Llena el formulario",
-    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor.",
-  },
-  {
-    n: <NumberCircleTwo size={32} weight="duotone" />,
-    titulo: "Te contactamos",
-    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor.",
-  },
-  {
-    n: <NumberCircleThree size={32} weight="duotone" />,
-    titulo: "Empiezas a operar",
-    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor.",
-  },
-];
-
-export default function DistribuidoresPage() {
+export default async function DistribuidoresPage() {
+  const [c, a] = await Promise.all([contenido(distribuidores), getAjustes()]);
+  const beneficios = c.beneficios.items.map((b, i) => ({ ...b, icon: iconosBeneficios[i % iconosBeneficios.length] }));
+  const proceso = c.proceso.pasos.map((p, i) => ({ ...p, n: iconosPasos[i % iconosPasos.length] }));
   return (
     <>
       <Navbar activo="Distribuidores" />
@@ -103,23 +87,23 @@ export default function DistribuidoresPage() {
               style={{ background: "white", color: "var(--accent-dark)", border: "1px solid var(--line)" }}
             >
               <Handshake size={14} weight="fill" />
-              Sé distribuidor CRT Profesional
+              {c.hero.pill}
             </span>
             <h1 className="heading1 mb-6" style={{ color: "var(--primary)" }}>
-              Crece tu negocio con{" "}
-              <span style={{ color: "var(--accent-dark)" }}>respaldo CRT</span>.
+              {c.hero.titulo}{" "}
+              <span style={{ color: "var(--accent-dark)" }}>{c.hero.resaltado}</span>.
             </h1>
             <p className="body1 mb-9 max-w-xl" style={{ color: "var(--secondary)" }}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              {c.hero.texto}
             </p>
             <div className="flex flex-wrap gap-3">
               <a href="#solicitud" className="btn-primary">
                 <Envelope size={16} weight="bold" />
-                Solicitar info
+                {c.hero.botonSolicitud}
               </a>
-              <a href="#" className="btn-outline-primary">
+              <a href={a.waLink} target="_blank" rel="noopener" className="btn-outline-primary">
                 <WhatsappLogo size={16} weight="fill" />
-                Hablar por WhatsApp
+                {c.hero.botonWhatsapp}
               </a>
             </div>
           </div>
@@ -131,13 +115,13 @@ export default function DistribuidoresPage() {
         <div className="container">
           <div className="max-w-2xl mb-14">
             <span className="text-sub-display" style={{ color: "var(--accent-dark)" }}>
-              Qué obtienes
+              {c.beneficios.etiqueta}
             </span>
             <h2 className="heading2 mt-3 mb-4" style={{ color: "var(--primary)" }}>
-              Beneficios de ser distribuidor.
+              {c.beneficios.titulo}
             </h2>
             <p className="body1" style={{ color: "var(--secondary)" }}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              {c.beneficios.texto}
             </p>
           </div>
 
@@ -167,13 +151,13 @@ export default function DistribuidoresPage() {
         <div className="container">
           <div className="max-w-2xl mb-14">
             <span className="text-sub-display" style={{ color: "var(--accent-dark)" }}>
-              Cómo se hace
+              {c.proceso.etiqueta}
             </span>
             <h2 className="heading2 mt-3 mb-4" style={{ color: "var(--primary)" }}>
-              Únete en tres pasos.
+              {c.proceso.titulo}
             </h2>
             <p className="body1" style={{ color: "var(--secondary)" }}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              {c.proceso.texto}
             </p>
           </div>
 
@@ -201,22 +185,17 @@ export default function DistribuidoresPage() {
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             <div>
               <span className="text-sub-display" style={{ color: "var(--accent-dark)" }}>
-                Quién aplica
+                {c.requisitos.etiqueta}
               </span>
               <h2 className="heading2 mt-3 mb-5" style={{ color: "var(--primary)" }}>
-                ¿Tu negocio puede ser distribuidor?
+                {c.requisitos.titulo}
               </h2>
               <p className="body1 mb-6" style={{ color: "var(--secondary)" }}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                {c.requisitos.texto}
               </p>
 
               <ul className="space-y-3 mb-9">
-                {[
-                  "Lorem ipsum dolor sit amet consectetur",
-                  "Lorem ipsum dolor sit amet adipiscing",
-                  "Lorem ipsum dolor sit amet incididunt",
-                  "Lorem ipsum dolor sit amet veniam",
-                ].map((b, i) => (
+                {c.requisitos.lista.map((b, i) => (
                   <li key={i} className="flex items-center gap-3" style={{ color: "var(--black)" }}>
                     <Check size={18} weight="bold" style={{ color: "var(--accent-dark)" }} />
                     {b}
@@ -236,14 +215,16 @@ export default function DistribuidoresPage() {
                 </div>
                 <div>
                   <p className="caption2 uppercase tracking-wider font-semibold" style={{ color: "var(--accent-dark)" }}>
-                    ¿Tienes dudas?
+                    {c.requisitos.dudasTitulo}
                   </p>
                   <p className="text-title font-semibold" style={{ color: "var(--primary)" }}>
-                    Hablemos antes de aplicar
+                    {c.requisitos.dudasTexto}
                   </p>
                 </div>
                 <a
-                  href="#"
+                  href={a.waLink}
+                  target="_blank"
+                  rel="noopener"
                   className="ml-auto text-xs font-semibold uppercase tracking-wider px-4 py-2 rounded-full transition hover:opacity-90 flex items-center gap-1.5 shrink-0"
                   style={{ background: "var(--accent)", color: "white" }}
                 >
@@ -268,9 +249,9 @@ export default function DistribuidoresPage() {
                 </div>
                 <div>
                   <p className="caption2 uppercase tracking-wider font-semibold" style={{ color: "var(--accent-dark)" }}>
-                    Solicitud
+                    {c.requisitos.formEtiqueta}
                   </p>
-                  <h3 className="text-title font-bold" style={{ color: "var(--primary)" }}>Sé distribuidor</h3>
+                  <h3 className="text-title font-bold" style={{ color: "var(--primary)" }}>{c.requisitos.formTitulo}</h3>
                 </div>
               </div>
 
@@ -355,11 +336,11 @@ export default function DistribuidoresPage() {
                   style={{ background: "var(--primary)", color: "white" }}
                 >
                   <Envelope size={16} weight="bold" />
-                  Enviar solicitud
+                  {c.requisitos.formBoton}
                 </button>
 
                 <p className="caption2 text-center" style={{ color: "var(--secondary)" }}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing.
+                  {c.requisitos.formNota}
                 </p>
               </form>
             </div>

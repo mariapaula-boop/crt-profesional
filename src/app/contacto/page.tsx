@@ -3,10 +3,14 @@ import {
   Envelope, Phone, Handshake, ChatCircleText,
   InstagramLogo, FacebookLogo, LinkedinLogo,
 } from "@phosphor-icons/react/dist/ssr";
+import { contenido } from "@/lib/cms";
+import { contacto } from "@/contenido/secundarias";
+import { getAjustes } from "@/contenido/ajustes";
+import { metadataCon } from "@/contenido/comun";
 import Navbar from "../_components/Navbar";
 import Footer from "../_components/Footer";
 
-export const metadata = {
+const metadataBase = {
   title: "Contacto · CRT Profesional",
   description:
     "Habla con un asesor CRT Profesional. WhatsApp, formulario y showroom Monterrey. Atendemos cafeterías, restaurantes, panaderías y heladerías independientes.",
@@ -20,39 +24,20 @@ export const metadata = {
   },
 };
 
-const canales = [
-  {
-    icon: <WhatsappLogo size={28} weight="duotone" />,
-    titulo: "WhatsApp",
-    desc: "Lorem ipsum dolor sit amet consectetur.",
-    cta: "Abrir chat",
-    href: "#",
-    primary: true,
-  },
-  {
-    icon: <Envelope size={28} weight="duotone" />,
-    titulo: "Email",
-    desc: "Lorem ipsum dolor sit amet consectetur.",
-    cta: "Lorem ipsum",
-    href: "#",
-  },
-  {
-    icon: <Phone size={28} weight="duotone" />,
-    titulo: "Teléfono",
-    desc: "Lorem ipsum dolor sit amet consectetur.",
-    cta: "Lorem ipsum",
-    href: "#",
-  },
-  {
-    icon: <Handshake size={28} weight="duotone" />,
-    titulo: "Distribuidores",
-    desc: "Acceso a fichas extendidas, manuales y guías técnicas.",
-    cta: "Registrarme",
-    href: "/distribuidores",
-  },
-];
+export async function generateMetadata() {
+  const c = await contenido(contacto);
+  return metadataCon(c.seo, contacto.campos.seo.defecto, metadataBase);
+}
 
-export default function ContactoPage() {
+export default async function ContactoPage() {
+  const [c, a] = await Promise.all([contenido(contacto), getAjustes()]);
+  // Textos: src/contenido/secundarias.ts; WhatsApp, correo y teléfono: Ajustes generales.
+  const canales = [
+    { icon: <WhatsappLogo size={28} weight="duotone" />, titulo: c.canales.whatsappTitulo, desc: c.canales.whatsappTexto, cta: c.canales.whatsappBoton, href: a.waLink, primary: true },
+    { icon: <Envelope size={28} weight="duotone" />, titulo: c.canales.correoTitulo, desc: c.canales.correoTexto, cta: c.canales.correoBoton, href: a.mailto, primary: false },
+    { icon: <Phone size={28} weight="duotone" />, titulo: c.canales.telefonoTitulo, desc: c.canales.telefonoTexto, cta: c.canales.telefonoBoton, href: a.telLink, primary: false },
+    { icon: <Handshake size={28} weight="duotone" />, titulo: c.canales.distTitulo, desc: c.canales.distTexto, cta: c.canales.distBoton, href: "/distribuidores", primary: false },
+  ];
   return (
     <>
       <Navbar activo="Contacto" />
@@ -87,14 +72,14 @@ export default function ContactoPage() {
               style={{ background: "white", color: "var(--accent-dark)", border: "1px solid var(--line)" }}
             >
               <ChatCircleText size={14} weight="fill" />
-              Estamos para ayudarte
+              {c.hero.pill}
             </span>
             <h1 className="heading1 mb-6" style={{ color: "var(--primary)" }}>
-              Hablemos de tu{" "}
-              <span style={{ color: "var(--accent-dark)" }}>proyecto</span>.
+              {c.hero.titulo}{" "}
+              <span style={{ color: "var(--accent-dark)" }}>{c.hero.resaltado}</span>.
             </h1>
             <p className="body1 max-w-xl" style={{ color: "var(--secondary)" }}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              {c.hero.texto}
             </p>
           </div>
         </div>
@@ -156,20 +141,20 @@ export default function ContactoPage() {
             {/* Info lateral */}
             <div>
               <span className="text-sub-display" style={{ color: "var(--accent-dark)" }}>
-                Pasamos a verte
+                {c.info.etiqueta}
               </span>
               <h2 className="heading2 mt-3 mb-5" style={{ color: "var(--primary)" }}>
-                Showroom Monterrey.
+                {c.info.titulo}
               </h2>
               <p className="body1 mb-8" style={{ color: "var(--secondary)" }}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                {c.info.texto}
               </p>
 
               <div className="space-y-5 mb-8">
                 {[
-                  { icon: <MapPin size={20} weight="duotone" />, label: "Dirección", value: "Monterrey, Nuevo León" },
-                  { icon: <Phone size={20} weight="duotone" />, label: "Teléfono", value: "Lorem ipsum" },
-                  { icon: <Envelope size={20} weight="duotone" />, label: "Email", value: "Lorem ipsum" },
+                  { icon: <MapPin size={20} weight="duotone" />, label: "Dirección", value: c.info.direccion },
+                  { icon: <Phone size={20} weight="duotone" />, label: "Teléfono", value: c.info.telefono },
+                  { icon: <Envelope size={20} weight="duotone" />, label: "Email", value: c.info.correo },
                 ].map((d, i) => (
                   <div key={i} className="flex items-start gap-4">
                     <div
@@ -189,17 +174,17 @@ export default function ContactoPage() {
               {/* Redes */}
               <div>
                 <p className="caption2 uppercase tracking-wider font-semibold mb-3" style={{ color: "var(--secondary)" }}>
-                  Síguenos
+                  {c.info.redesTitulo}
                 </p>
                 <div className="flex gap-2">
                   {[
-                    { Icon: InstagramLogo, label: "Instagram" },
-                    { Icon: FacebookLogo, label: "Facebook" },
-                    { Icon: LinkedinLogo, label: "LinkedIn" },
-                  ].map(({ Icon, label }) => (
+                    { Icon: InstagramLogo, label: "Instagram", href: a.redes.instagram },
+                    { Icon: FacebookLogo, label: "Facebook", href: a.redes.facebook },
+                    { Icon: LinkedinLogo, label: "LinkedIn", href: a.redes.linkedin },
+                  ].map(({ Icon, label, href }) => (
                     <a
                       key={label}
-                      href="#"
+                      href={href || "#"}
                       className="w-10 h-10 rounded-full flex items-center justify-center transition hover:opacity-80"
                       style={{ background: "var(--primary)", color: "white" }}
                       aria-label={label}
@@ -225,9 +210,9 @@ export default function ContactoPage() {
                 </div>
                 <div>
                   <p className="caption2 uppercase tracking-wider font-semibold" style={{ color: "var(--accent-dark)" }}>
-                    Formulario
+                    {c.formulario.etiqueta}
                   </p>
-                  <h3 className="text-title font-bold" style={{ color: "var(--primary)" }}>Mándanos un mensaje</h3>
+                  <h3 className="text-title font-bold" style={{ color: "var(--primary)" }}>{c.formulario.titulo}</h3>
                 </div>
               </div>
 
@@ -318,11 +303,11 @@ export default function ContactoPage() {
                   style={{ background: "var(--primary)", color: "white" }}
                 >
                   <Envelope size={16} weight="bold" />
-                  Enviar mensaje
+                  {c.formulario.boton}
                 </button>
 
                 <p className="caption2 text-center" style={{ color: "var(--secondary)" }}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing.
+                  {c.formulario.nota}
                 </p>
               </form>
             </div>

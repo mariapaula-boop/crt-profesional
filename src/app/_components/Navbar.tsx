@@ -1,4 +1,5 @@
 import { WhatsappLogo, List } from "@phosphor-icons/react/dist/ssr";
+import { getAjustes } from "@/contenido/ajustes";
 
 export type NavbarActiveItem =
   | "Cafeterías"
@@ -20,16 +21,17 @@ const NAV_ITEMS: { label: string; href: string }[] = [
   { label: "Blog", href: "/blog" },
 ];
 
-export default function Navbar({ activo = null }: { activo?: NavbarActiveItem }) {
+export default async function Navbar({ activo = null }: { activo?: NavbarActiveItem }) {
+  const a = await getAjustes();
   return (
     <nav className="absolute top-0 left-0 right-0 z-30">
       <div className="container flex items-center justify-between py-5">
         <a href="/" className="flex items-baseline gap-2">
           <span className="text-2xl font-bold tracking-tight" style={{ fontFamily: "var(--font-display)", color: "var(--primary)" }}>
-            CRT
+            {a.menu.marca1}
           </span>
           <span className="text-xs font-semibold uppercase tracking-[2px] px-2 py-0.5 rounded-full" style={{ background: "var(--primary)", color: "white" }}>
-            Profesional
+            {a.menu.marca2}
           </span>
         </a>
 
@@ -53,7 +55,7 @@ export default function Navbar({ activo = null }: { activo?: NavbarActiveItem })
             style={{ background: "var(--primary)", color: "white" }}
           >
             <WhatsappLogo size={14} weight="fill" />
-            Cotizar
+            {a.menu.boton}
           </a>
         </div>
 

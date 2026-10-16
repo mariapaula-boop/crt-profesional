@@ -2,10 +2,14 @@ import {
   ArrowRight, WhatsappLogo, CaretRight, House, MapPin,
   ChatCircleText, Clock, Phone, Check, Calendar,
 } from "@phosphor-icons/react/dist/ssr";
+import { contenido } from "@/lib/cms";
+import { visitanos } from "@/contenido/secundarias";
+import { getAjustes } from "@/contenido/ajustes";
+import { metadataCon } from "@/contenido/comun";
 import Navbar from "../_components/Navbar";
 import Footer from "../_components/Footer";
 
-export const metadata = {
+const metadataBase = {
   title: "Visítanos · Showroom Monterrey · CRT Profesional",
   description:
     "Ven a probar antes de comprar. Showroom CRT Profesional en Monterrey, Nuevo León. Cafeteras Bezzera, máquinas de hielo, vitrinas y más en operación.",
@@ -19,7 +23,14 @@ export const metadata = {
   },
 };
 
-export default function VisitanosPage() {
+export async function generateMetadata() {
+  const c = await contenido(visitanos);
+  return metadataCon(c.seo, visitanos.campos.seo.defecto, metadataBase);
+}
+
+// Textos: src/contenido/secundarias.ts (editables en el administrador).
+export default async function VisitanosPage() {
+  const [c, a] = await Promise.all([contenido(visitanos), getAjustes()]);
   return (
     <>
       <Navbar activo="Visítanos" />
@@ -59,25 +70,25 @@ export default function VisitanosPage() {
                 style={{ background: "white", color: "var(--accent-dark)", border: "1px solid var(--line)" }}
               >
                 <MapPin size={14} weight="fill" />
-                Showroom Monterrey
+                {c.hero.pill}
               </span>
 
               <h1 className="heading1 mb-6" style={{ color: "var(--primary)" }}>
-                Ven a probar{" "}
-                <span style={{ color: "var(--accent-dark)" }}>antes de comprar</span>.
+                {c.hero.titulo}{" "}
+                <span style={{ color: "var(--accent-dark)" }}>{c.hero.resaltado}</span>.
               </h1>
 
               <p className="body1 mb-9 max-w-xl" style={{ color: "var(--secondary)" }}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                {c.hero.texto}
               </p>
 
               <div className="flex flex-wrap gap-3">
-                <a href="#" className="btn-primary">
+                <a href={a.waLink} target="_blank" rel="noopener" className="btn-primary">
                   <ChatCircleText size={16} weight="duotone" />
-                  Agendar visita
+                  {c.hero.botonAgendar}
                 </a>
                 <a href="#mapa" className="btn-outline-primary">
-                  Ver en mapa
+                  {c.hero.botonMapa}
                   <ArrowRight size={16} weight="bold" />
                 </a>
               </div>
@@ -85,9 +96,9 @@ export default function VisitanosPage() {
               {/* Datos de contacto rápidos */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-12 pt-8 border-t" style={{ borderColor: "var(--line)" }}>
                 {[
-                  { icon: <MapPin size={20} weight="duotone" />, label: "Dirección", value: "Monterrey, Nuevo León" },
-                  { icon: <Clock size={20} weight="duotone" />, label: "Horario", value: "Lorem ipsum dolor" },
-                  { icon: <Phone size={20} weight="duotone" />, label: "Teléfono", value: "Lorem ipsum" },
+                  { icon: <MapPin size={20} weight="duotone" />, label: "Dirección", value: c.hero.direccion },
+                  { icon: <Clock size={20} weight="duotone" />, label: "Horario", value: c.hero.horario },
+                  { icon: <Phone size={20} weight="duotone" />, label: "Teléfono", value: c.hero.telefono },
                 ].map((d, i) => (
                   <div key={i} className="flex items-start gap-3">
                     <div
@@ -109,18 +120,18 @@ export default function VisitanosPage() {
             <div className="lg:col-span-5 relative">
               <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl">
                 <img
-                  src="https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=900&q=85&auto=format&fit=crop"
+                  src={c.hero.imagen}
                   alt="Showroom CRT Profesional en Monterrey, Nuevo León"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 60%, rgba(10,37,64,0.9) 100%)" }} />
                 <div className="absolute bottom-6 left-6 right-6 text-white">
                   <p className="caption2 uppercase tracking-wider font-bold mb-2" style={{ color: "var(--accent-light)" }}>
-                    Visítanos
+                    {c.hero.fotoEtiqueta}
                   </p>
                   <p className="text-2xl font-bold leading-tight" style={{ fontFamily: "var(--font-display)" }}>
-                    Showroom CRT Pro<br />
-                    <span className="text-sm font-medium opacity-80">Monterrey, Nuevo León</span>
+                    {c.hero.fotoTitulo}<br />
+                    <span className="text-sm font-medium opacity-80">{c.hero.fotoCiudad}</span>
                   </p>
                 </div>
               </div>
@@ -135,23 +146,17 @@ export default function VisitanosPage() {
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             <div>
               <span className="text-sub-display" style={{ color: "var(--accent-dark)" }}>
-                Qué encuentras
+                {c.equipos.etiqueta}
               </span>
               <h2 className="heading2 mt-3 mb-5" style={{ color: "var(--primary)" }}>
-                Equipos en operación, listos para probar.
+                {c.equipos.titulo}
               </h2>
               <p className="body1 mb-8" style={{ color: "var(--secondary)" }}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.
+                {c.equipos.texto}
               </p>
 
               <ul className="space-y-3">
-                {[
-                  "Lorem ipsum dolor sit amet consectetur",
-                  "Lorem ipsum dolor sit amet adipiscing elit",
-                  "Lorem ipsum dolor sit amet sed do eiusmod",
-                  "Lorem ipsum dolor sit amet ut labore",
-                  "Lorem ipsum dolor sit amet veniam",
-                ].map((b, i) => (
+                {c.equipos.lista.map((b, i) => (
                   <li key={i} className="flex items-center gap-3" style={{ color: "var(--black)" }}>
                     <Check size={18} weight="bold" style={{ color: "var(--accent-dark)" }} />
                     {b}
@@ -174,9 +179,9 @@ export default function VisitanosPage() {
                 </div>
                 <div>
                   <p className="caption2 uppercase tracking-wider font-semibold" style={{ color: "var(--accent-dark)" }}>
-                    Agenda tu visita
+                    {c.equipos.formEtiqueta}
                   </p>
-                  <h3 className="text-title font-bold" style={{ color: "var(--primary)" }}>Te esperamos</h3>
+                  <h3 className="text-title font-bold" style={{ color: "var(--primary)" }}>{c.equipos.formTitulo}</h3>
                 </div>
               </div>
 
@@ -239,7 +244,7 @@ export default function VisitanosPage() {
                   style={{ background: "var(--primary)", color: "white" }}
                 >
                   <Calendar size={16} weight="bold" />
-                  Agendar visita
+                  {c.equipos.formBoton}
                 </button>
               </form>
             </div>
@@ -252,13 +257,13 @@ export default function VisitanosPage() {
         <div className="container">
           <div className="max-w-2xl mb-12">
             <span className="text-sub-display" style={{ color: "var(--accent-dark)" }}>
-              Cómo llegar
+              {c.mapa.etiqueta}
             </span>
             <h2 className="heading2 mt-3 mb-4" style={{ color: "var(--primary)" }}>
-              Te esperamos en Monterrey.
+              {c.mapa.titulo}
             </h2>
             <p className="body1" style={{ color: "var(--secondary)" }}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.
+              {c.mapa.texto}
             </p>
           </div>
 
@@ -278,7 +283,7 @@ export default function VisitanosPage() {
               <MapPin size={64} weight="duotone" style={{ color: "var(--accent-light)" }} className="mx-auto mb-4" />
               <p className="heading4 mb-2">Monterrey, Nuevo León</p>
               <p className="caption1 opacity-75 max-w-md">
-                Dirección y mapa pendiente — confirmaremos cuando esté lista la dirección exacta del showroom.
+                {c.mapa.enlace ? <a href={c.mapa.enlace} target="_blank" rel="noopener" className="underline">{c.mapa.aviso}</a> : c.mapa.aviso}
               </p>
             </div>
           </div>
@@ -292,11 +297,11 @@ export default function VisitanosPage() {
             <WhatsappLogo size={42} weight="duotone" style={{ color: "var(--accent-light)" }} className="mx-auto mb-5" />
             <h2 className="heading2 mb-4 text-white">¿Prefieres avisar primero?</h2>
             <p className="body1 mb-8 text-white/75">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt.
+              {c.mapa.textoFinal}
             </p>
-            <a href="#" className="btn-accent">
+            <a href={a.waLink} target="_blank" rel="noopener" className="btn-accent">
               <WhatsappLogo size={16} weight="fill" />
-              Confirmar por WhatsApp
+              {c.mapa.boton}
             </a>
           </div>
         </div>

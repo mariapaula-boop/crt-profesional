@@ -1,7 +1,13 @@
 import { Coffee, Snowflake, Storefront, Sparkle, Drop } from "@phosphor-icons/react/dist/ssr";
-import VerticalLayout, { type Categoria } from "../_components/VerticalLayout";
+import VerticalLayout from "../_components/VerticalLayout";
+import { contenido } from "@/lib/cms";
+import { giroCafeteria as pagina } from "@/contenido/giros";
+import { getAjustes } from "@/contenido/ajustes";
+import { metadataCon } from "@/contenido/comun";
+import { productosDelGiro } from "@/lib/productos";
+import { getPostsCms } from "@/lib/blog";
 
-export const metadata = {
+const metadataBase = {
   title: "Equipa tu cafetería · CRT Profesional",
   description:
     "Cafeteras Bezzera, molinos, vitrinas mostrador, máquinas de hielo bajo barra y más. Asesoría real, showroom Monterrey y entrega nacional.",
@@ -15,31 +21,32 @@ export const metadata = {
   },
 };
 
-// Categorías del brief sec 3.B (verificadas)
-const categorias: Categoria[] = [
-  { nombre: "Cafeteras espresso", icon: <Coffee size={26} weight="duotone" />, img: "https://images.unsplash.com/photo-1545665225-b23b99e4d45e?w=800&q=80&auto=format&fit=crop" },
-  { nombre: "Molinos de café", icon: <Drop size={26} weight="duotone" />, img: "https://images.unsplash.com/photo-1518057111178-44a106bad636?w=800&q=80&auto=format&fit=crop" },
-  { nombre: "Vitrinas mostrador", icon: <Storefront size={26} weight="duotone" />, img: "https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=800&q=80&auto=format&fit=crop" },
-  { nombre: "Hielo bajo barra", icon: <Snowflake size={26} weight="duotone" />, img: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80&auto=format&fit=crop" },
-  { nombre: "Granita y frappé", icon: <Sparkle size={26} weight="duotone" />, img: "https://images.unsplash.com/photo-1556881286-fc6915169721?w=800&q=80&auto=format&fit=crop" },
-  { nombre: "Lavavajillas compactos", icon: <Drop size={26} weight="duotone" />, img: "https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?w=800&q=80&auto=format&fit=crop" },
+export async function generateMetadata() {
+  const c = await contenido(pagina);
+  return metadataCon(c.seo, pagina.campos.seo.defecto, metadataBase);
+}
+
+// Textos e imágenes: src/contenido/giros.ts (editables en el administrador).
+const iconos = [
+  <Coffee key="0" size={26} weight="duotone" />,
+  <Drop key="1" size={26} weight="duotone" />,
+  <Storefront key="2" size={26} weight="duotone" />,
+  <Snowflake key="3" size={26} weight="duotone" />,
+  <Sparkle key="4" size={26} weight="duotone" />,
+  <Drop key="5" size={26} weight="duotone" />,
 ];
 
-export default function CafeteriaPage() {
+export default async function CafeteriaPage() {
+  const [c, a, productos, posts] = await Promise.all([contenido(pagina), getAjustes(), productosDelGiro("Cafetería"), getPostsCms()]);
   return (
     <VerticalLayout
       verticalActiva="Cafeterías"
-      pillText="Equipa tu cafetería"
       pillIcon={<Coffee size={14} weight="fill" />}
-      h1Word="cafetería"
-      heroImg="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=900&q=85&auto=format&fit=crop"
-      heroImgAlt="Barista preparando espresso en cafetería"
-      categorias={categorias}
-      otrasMarcas={["ITV", "CRT", "Lorem", "Lorem", "Lorem"]}
-      marcaImg="https://images.unsplash.com/photo-1610889556528-9a770e32642f?w=900&q=85&auto=format&fit=crop"
-      marcaImgAlt="Cafetera espresso italiana profesional"
-      showroomImg="https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=900&q=85&auto=format&fit=crop"
-      ctaButtonText="Cotizar mi cafetería"
+      iconos={iconos}
+      c={c}
+      a={a}
+      productos={productos}
+      posts={posts}
     />
   );
 }

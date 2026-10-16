@@ -3,9 +3,12 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 import Navbar from "../_components/Navbar";
 import Footer from "../_components/Footer";
-import { posts } from "@/lib/posts";
+import { getPostsBlog } from "@/lib/blog";
+import { contenido } from "@/lib/cms";
+import { blog } from "@/contenido/blog";
+import { metadataCon } from "@/contenido/comun";
 
-export const metadata = {
+const metadataBase = {
   title: "Blog y tips para tu negocio · CRT Profesional",
   description:
     "Tips, guías y noticias para dueños de cafeterías, restaurantes, panaderías y heladerías. Equipa mejor, opera mejor, vende mejor.",
@@ -19,7 +22,13 @@ export const metadata = {
   },
 };
 
-export default function BlogPage() {
+export async function generateMetadata() {
+  const c = await contenido(blog);
+  return metadataCon(c.seo, blog.campos.seo.defecto, metadataBase);
+}
+
+export default async function BlogPage() {
+  const [c, posts] = await Promise.all([contenido(blog), getPostsBlog()]);
   return (
     <>
       <Navbar activo="Blog" />
@@ -54,14 +63,14 @@ export default function BlogPage() {
               style={{ background: "white", color: "var(--accent-dark)", border: "1px solid var(--line)" }}
             >
               <Article size={14} weight="fill" />
-              Tips para tu negocio
+              {c.hero.pill}
             </span>
             <h1 className="heading1 mb-6" style={{ color: "var(--primary)" }}>
               Blog y{" "}
               <span style={{ color: "var(--accent-dark)" }}>recursos</span>.
             </h1>
             <p className="body1 max-w-xl" style={{ color: "var(--secondary)" }}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              {c.hero.texto}
             </p>
           </div>
         </div>

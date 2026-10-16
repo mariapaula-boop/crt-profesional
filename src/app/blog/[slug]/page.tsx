@@ -4,9 +4,13 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 import Navbar from "../../_components/Navbar";
 import Footer from "../../_components/Footer";
-import { posts, getPost, getRelatedPosts } from "@/lib/posts";
+import { getPostsBlog, relacionados } from "@/lib/blog";
+import { contenido } from "@/lib/cms";
+import { blog } from "@/contenido/blog";
+import { getAjustes } from "@/contenido/ajustes";
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const posts = await getPostsBlog();
   return posts.map((p) => ({ slug: p.slug }));
 }
 
@@ -14,7 +18,7 @@ type Params = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Params) {
   const { slug } = await params;
-  const p = getPost(slug);
+  const p = (await getPostsBlog()).find((q) => q.slug === slug);
   if (!p) return { title: "Artículo no encontrado · CRT Profesional" };
   const url = `https://crtpro.com.mx/blog/${p.slug}`;
   return {
@@ -33,10 +37,11 @@ export async function generateMetadata({ params }: Params) {
 
 export default async function BlogPostPage({ params }: Params) {
   const { slug } = await params;
-  const p = getPost(slug);
+  const [lista, c, a] = await Promise.all([getPostsBlog(), contenido(blog), getAjustes()]);
+  const p = lista.find((q) => q.slug === slug);
   if (!p) notFound();
 
-  const related = getRelatedPosts(p, 3);
+  const related = relacionados(lista, p, 3);
 
   return (
     <>
@@ -99,6 +104,10 @@ export default async function BlogPostPage({ params }: Params) {
       <section className="py-16 lg:py-20" style={{ background: "white" }}>
         <div className="container">
           <article className="max-w-3xl">
+            {p.html ? (
+              <div className="contenido-blog" dangerouslySetInnerHTML={{ __html: p.html }} />
+            ) : (
+            <>
             {/* Aviso lorem ipsum */}
             <div
               className="mb-8 p-4 rounded-r-lg"
@@ -168,6 +177,8 @@ export default async function BlogPostPage({ params }: Params) {
             <p className="body1 mb-10" style={{ color: "var(--secondary)" }}>
               Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.
             </p>
+            </>
+            )}
           </article>
         </div>
       </section>
@@ -223,13 +234,13 @@ export default async function BlogPostPage({ params }: Params) {
         <div className="container">
           <div className="max-w-2xl mx-auto text-center">
             <Article size={42} weight="duotone" style={{ color: "var(--accent-light)" }} className="mx-auto mb-5" />
-            <h2 className="heading3 mb-4 text-white">¿Te aplica este tema?</h2>
+            <h2 className="heading3 mb-4 text-white">{c.articulo.titulo}</h2>
             <p className="body1 mb-8 text-white/75">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.
+              {c.articulo.texto}
             </p>
-            <a href="#" className="btn-accent">
+            <a href={a.waLink} target="_blank" rel="noopener" className="btn-accent">
               <WhatsappLogo size={16} weight="fill" />
-              Hablar con un asesor
+              {c.articulo.boton}
             </a>
           </div>
         </div>

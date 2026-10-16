@@ -5,95 +5,50 @@ import {
   Sparkle, FileText, Handshake,
   InstagramLogo, FacebookLogo, LinkedinLogo,
 } from "@phosphor-icons/react/dist/ssr";
+import { contenido } from "@/lib/cms";
+import { home } from "@/contenido/home";
+import { getAjustes } from "@/contenido/ajustes";
+import { metadataCon } from "@/contenido/comun";
+import { getProductos } from "@/lib/productos";
+import { getPostsCms } from "@/lib/blog";
 
-export const metadata = {
+const metadataBase = {
   title: "CRT Profesional — Equipa tu cafetería, restaurante, panadería o heladería",
   description:
     "Catálogo profesional para distribuidores y dueños de negocio. Cafeteras, batidoras, vitrinas, máquinas de helado, hornos. Cotiza por WhatsApp.",
 };
 
-const verticales = [
-  {
-    nombre: "Restaurantes",
-    slug: "restaurante",
-    desc: "Hornos de convección, lavavajillas industriales, procesadores, empacadoras y refrigeración para tu cocina.",
-    icon: <ForkKnife size={28} weight="duotone" />,
-    color: "var(--primary-dark)",
-    img: "https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=800&q=80&auto=format&fit=crop",
-    items: "+ 60 productos",
-  },
-  {
-    nombre: "Cafeterías",
-    slug: "cafeteria",
-    desc: "Cafeteras industriales Bezzera, molinos, vitrinas mostrador, máquinas de hielo bajo barra, granita y frappé.",
-    icon: <Coffee size={28} weight="duotone" />,
-    color: "var(--primary)",
-    img: "https://images.unsplash.com/photo-1545418314-7ce0b9b53901?w=800&q=80&auto=format&fit=crop",
-    items: "+ 45 productos",
-  },
-  {
-    nombre: "Panadería",
-    slug: "panaderia",
-    desc: "Amasadoras, batidoras, hornos rotativos, vitrinas de exhibición y mesas de trabajo en acero inoxidable.",
-    icon: <Bread size={28} weight="duotone" />,
-    color: "var(--primary-light)",
-    img: "https://images.unsplash.com/photo-1711672284661-bd70e38f31b2?w=800&q=80&auto=format&fit=crop",
-    items: "+ 35 productos",
-  },
-  {
-    nombre: "Helados",
-    slug: "heladeria",
-    desc: "Máquinas de helado suave, vitrinas exhibidoras, refrigeradores de paleta y equipos para gelaterías.",
-    icon: <IceCream size={28} weight="duotone" />,
-    color: "var(--accent)",
-    img: "https://images.unsplash.com/photo-1560801619-01d71da0f70c?w=800&q=80&auto=format&fit=crop",
-    items: "+ 25 productos",
-  },
+export async function generateMetadata() {
+  const c = await contenido(home);
+  return metadataCon(c.seo, home.campos.seo.defecto, metadataBase);
+}
+
+// Textos e imágenes: src/contenido/home.ts (editables en el administrador). Aquí lo fijo.
+const decoVerticales = {
+  restaurante: { icon: <ForkKnife size={28} weight="duotone" />, color: "var(--primary-dark)" },
+  cafeteria: { icon: <Coffee size={28} weight="duotone" />, color: "var(--primary)" },
+  panaderia: { icon: <Bread size={28} weight="duotone" />, color: "var(--primary-light)" },
+  heladeria: { icon: <IceCream size={28} weight="duotone" />, color: "var(--accent)" },
+};
+const iconosBeneficios = [
+  <FileText key="0" size={22} weight="duotone" />,
+  <Handshake key="1" size={22} weight="duotone" />,
+  <Truck key="2" size={22} weight="duotone" />,
+  <Sparkle key="3" size={22} weight="duotone" />,
 ];
+const colorDeGiro: Record<string, string> = { "Cafetería": "var(--primary)", "Panadería": "var(--primary-light)", "Helados": "var(--accent)", "Heladería": "var(--accent)", "Restaurante": "var(--primary-dark)" };
 
-const productos = [
-  {
-    nombre: "Cafetera Bezzera espresso 2 grupos",
-    tag: "Cafetería",
-    color: "var(--primary)",
-    img: "https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=600&q=80&auto=format&fit=crop",
-  },
-  {
-    nombre: "Batidora industrial Adler 60L",
-    tag: "Panadería",
-    color: "var(--primary-light)",
-    img: "https://images.unsplash.com/photo-1739294525052-770fcecdd6b6?w=600&q=80&auto=format&fit=crop",
-  },
-  {
-    nombre: "Vitrina mostrador para pasteles",
-    tag: "Cafetería",
-    color: "var(--primary)",
-    img: "https://images.unsplash.com/photo-1604443402123-0bf4dd913f05?w=600&q=80&auto=format&fit=crop",
-  },
-  {
-    nombre: "Horno rotativo para panadería",
-    tag: "Panadería",
-    color: "var(--primary-light)",
-    img: "https://images.unsplash.com/photo-1682071308247-04c65c28bba5?w=600&q=80&auto=format&fit=crop",
-  },
-];
-
-const marcas = ["ITV", "Bezzera", "Fricon", "Adler", "LF", "CRT Pro"];
-
-const distribuidorBeneficios = [
-  { icon: <FileText size={22} weight="duotone" />, titulo: "Fichas técnicas completas", desc: "Manuales de operación, hojas de especificación y videos de instalación para cada equipo." },
-  { icon: <Handshake size={22} weight="duotone" />, titulo: "Atención personalizada", desc: "Un asesor dedicado por región. WhatsApp, llamada o visita a tu negocio." },
-  { icon: <Truck size={22} weight="duotone" />, titulo: "Entrega nacional", desc: "Cobertura en toda la república. Logística directa desde almacén Monterrey o Querétaro." },
-  { icon: <Sparkle size={22} weight="duotone" />, titulo: "Refacciones y servicio", desc: "Refacciones originales y técnicos certificados para mantenimiento preventivo." },
-];
-
-const blog = [
-  { categoria: "Cafetería", titulo: "Cómo equipar una cafetería desde cero: la lista completa", fecha: "May 2026", img: "https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=800&q=80&auto=format&fit=crop", color: "var(--primary)" },
-  { categoria: "Panadería", titulo: "Amasadora espiral vs planetaria: cuál conviene para tu producción", fecha: "Abril 2026", img: "https://images.unsplash.com/photo-1739294525052-770fcecdd6b6?w=800&q=80&auto=format&fit=crop", color: "var(--primary-light)" },
-  { categoria: "Helados", titulo: "Máquina de helado suave: qué medir antes de comprar tu primer equipo", fecha: "Abril 2026", img: "https://images.unsplash.com/photo-1560801619-01d71da0f70c?w=800&q=80&auto=format&fit=crop", color: "var(--accent)" },
-];
-
-export default function Home() {
+export default async function Home() {
+  const [c, a, publicados, posts] = await Promise.all([contenido(home), getAjustes(), getProductos(), getPostsCms()]);
+  const verticales = (Object.keys(decoVerticales) as (keyof typeof decoVerticales)[]).map((slug) => ({ slug, ...c.verticales[slug], ...decoVerticales[slug] }));
+  const marcas = c.marcas.lista;
+  const productos = publicados.length > 0
+    ? publicados.slice(0, 4).map((p) => ({ nombre: p.nombre, tag: p.etiqueta, color: p.color || colorDeGiro[p.giros[0]] || "var(--primary)", img: p.img, ficha: p.ficha || p.tienda }))
+    : c.equipos.ejemplos.map((e) => ({ nombre: e.nombre, tag: e.tag, color: colorDeGiro[e.tag] || "var(--primary)", img: e.img, ficha: "" }));
+  const distribuidorBeneficios = c.distribuidores.beneficios.map((b, i) => ({ ...b, icon: iconosBeneficios[i % iconosBeneficios.length] }));
+  const blog = posts.length > 0
+    ? posts.slice(0, 3).map((p) => ({ categoria: p.categoria, titulo: p.titulo, fecha: p.fecha, img: p.img ?? "", color: colorDeGiro[p.categoria] || "var(--primary)", href: `/blog/${p.slug}` }))
+    : c.blog.ejemplos.map((e) => ({ ...e, color: colorDeGiro[e.categoria] || "var(--primary)", href: "/blog" }));
   return (
     <>
       {/* ====================== NAVBAR — claro sobre cream ====================== */}
@@ -101,10 +56,10 @@ export default function Home() {
         <div className="container flex items-center justify-between py-5">
           <a href="/" className="flex items-baseline gap-2">
             <span className="text-2xl font-bold tracking-tight" style={{ fontFamily: "var(--font-display)", color: "var(--primary)" }}>
-              CRT
+              {a.menu.marca1}
             </span>
             <span className="text-xs font-semibold uppercase tracking-[2px] px-2 py-0.5 rounded-full" style={{ background: "var(--primary)", color: "white" }}>
-              Profesional
+              {a.menu.marca2}
             </span>
           </a>
 
@@ -114,8 +69,8 @@ export default function Home() {
               { label: "Cafeterías", href: "/cafeteria" },
               { label: "Panadería", href: "/panaderia" },
               { label: "Helados", href: "/heladeria" },
-              { label: "Marcas", href: "#" },
-              { label: "Blog", href: "#" },
+              { label: "Marcas", href: "#marcas" },
+              { label: "Blog", href: "/blog" },
             ].map((item) => (
               <a key={item.label} href={item.href} className="text-sm font-medium hover:text-accent-dark transition" style={{ color: "var(--black)" }}>
                 {item.label}
@@ -124,9 +79,9 @@ export default function Home() {
           </div>
 
           <div className="hidden md:flex items-center gap-3">
-            <a href="#" className="text-xs font-semibold uppercase tracking-wider px-5 py-2.5 rounded-full transition flex items-center gap-1.5" style={{ background: "var(--primary)", color: "white" }}>
+            <a href={a.waLink} target="_blank" rel="noopener" className="text-xs font-semibold uppercase tracking-wider px-5 py-2.5 rounded-full transition flex items-center gap-1.5" style={{ background: "var(--primary)", color: "white" }}>
               <WhatsappLogo size={14} weight="fill" />
-              Cotizar
+              {a.menu.boton}
             </a>
           </div>
 
@@ -148,37 +103,33 @@ export default function Home() {
             <div className="lg:col-span-6">
               <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider mb-6" style={{ background: "white", color: "var(--primary)", border: "1px solid var(--line)" }}>
                 <Storefront size={14} weight="fill" />
-                Para distribuidores y dueños de negocio
+                {c.hero.pill}
               </span>
               <h1 className="heading1 mb-6" style={{ color: "var(--primary)" }}>
-                Equipa tu negocio con{" "}
-                <span style={{ color: "var(--primary-light)" }}>fichas técnicas</span>,{" "}
-                <span style={{ color: "var(--primary)" }}>asesoría real</span>{" "}
-                y entrega nacional.
+                {c.hero.titulo}{" "}
+                <span style={{ color: "var(--primary-light)" }}>{c.hero.resaltado1}</span>,{" "}
+                <span style={{ color: "var(--primary)" }}>{c.hero.resaltado2}</span>{" "}
+                {c.hero.cierre}
               </h1>
               <p className="body1 mb-10 max-w-xl" style={{ color: "var(--secondary)" }}>
-                Catálogo profesional con marcas representadas (ITV, Bezzera, Fricon, Adler) más la línea propia CRT Pro. Cotiza por WhatsApp directo con un asesor que sí conoce el equipo.
+                {c.hero.texto}
               </p>
               <div className="flex flex-wrap gap-4">
-                <a href="#" className="btn-primary">
+                <a href={a.waLink} target="_blank" rel="noopener" className="btn-primary">
                   <WhatsappLogo size={18} weight="fill" />
-                  Hablar con un asesor
+                  {c.hero.botonWhatsapp}
                 </a>
                 <a href="#verticales" className="btn-outline-primary">
-                  Explorar catálogo
+                  {c.hero.botonCatalogo}
                   <ArrowRight size={18} weight="bold" />
                 </a>
               </div>
 
               <div className="grid grid-cols-3 gap-6 mt-12 pt-8 border-t" style={{ borderColor: "var(--line)" }}>
-                {[
-                  { value: "+200", label: "Distribuidores activos" },
-                  { value: "+500", label: "Negocios equipados" },
-                  { value: "36+", label: "Años de experiencia" },
-                ].map((s) => (
-                  <div key={s.label}>
-                    <div className="heading4" style={{ color: "var(--primary)" }}>{s.value}</div>
-                    <div className="caption1" style={{ color: "var(--secondary)" }}>{s.label}</div>
+                {c.hero.datos.map((s, i) => (
+                  <div key={i}>
+                    <div className="heading4" style={{ color: "var(--primary)" }}>{s.valor}</div>
+                    <div className="caption1" style={{ color: "var(--secondary)" }}>{s.texto}</div>
                   </div>
                 ))}
               </div>
@@ -222,10 +173,10 @@ export default function Home() {
       <section className="py-24" id="verticales">
         <div className="container">
           <div className="max-w-2xl mb-14">
-            <span className="text-sub-display" style={{ color: "var(--primary)" }}>Cuatro verticales</span>
-            <h2 className="heading2 mt-3 mb-4">¿Por dónde quieres empezar?</h2>
+            <span className="text-sub-display" style={{ color: "var(--primary)" }}>{c.verticales.etiqueta}</span>
+            <h2 className="heading2 mt-3 mb-4">{c.verticales.titulo}</h2>
             <p className="body1" style={{ color: "var(--secondary)" }}>
-              Cada vertical tiene su propio catálogo curado, fichas técnicas descargables y casos prácticos. Elige tu rubro y cotiza directo.
+              {c.verticales.texto}
             </p>
           </div>
 
@@ -249,7 +200,7 @@ export default function Home() {
                     <h3 className="heading5 mb-2">{v.nombre}</h3>
                     <p className="caption1 mb-5" style={{ color: "var(--secondary)" }}>{v.desc}</p>
                     <div className="inline-flex items-center gap-2 text-sm font-semibold" style={{ color: v.color }}>
-                      Ver catálogo
+                      {c.verticales.boton}
                       <ArrowRight size={14} weight="bold" className="group-hover:translate-x-1 transition" />
                     </div>
                   </div>
@@ -265,16 +216,16 @@ export default function Home() {
       </section>
 
       {/* ====================== MARCAS REPRESENTADAS ====================== */}
-      <section className="py-16 border-y" style={{ background: "var(--surface)", borderColor: "var(--line)" }}>
+      <section id="marcas" className="py-16 border-y" style={{ background: "var(--surface)", borderColor: "var(--line)" }}>
         <div className="container">
           <div className="text-center mb-10">
-            <span className="text-sub-display" style={{ color: "var(--primary)" }}>Marcas representadas</span>
-            <p className="body1 mt-3" style={{ color: "var(--secondary)" }}>Sólo equipos profesionales certificados. Sin “marcas blancas” sospechosas.</p>
+            <span className="text-sub-display" style={{ color: "var(--primary)" }}>{c.marcas.etiqueta}</span>
+            <p className="body1 mt-3" style={{ color: "var(--secondary)" }}>{c.marcas.texto}</p>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6">
-            {marcas.map((m) => (
+            {marcas.map((m, i) => (
               <div
-                key={m}
+                key={i}
                 className="px-6 py-3 rounded-xl bg-white border text-base font-bold tracking-tight"
                 style={{ borderColor: "var(--line)", color: "var(--primary)", fontFamily: "var(--font-display)" }}
               >
@@ -290,21 +241,21 @@ export default function Home() {
         <div className="container">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
             <div className="max-w-2xl">
-              <span className="text-sub-display" style={{ color: "var(--primary)" }}>Top del mes</span>
-              <h2 className="heading2 mt-3 mb-4">Equipos destacados</h2>
+              <span className="text-sub-display" style={{ color: "var(--primary)" }}>{c.equipos.etiqueta}</span>
+              <h2 className="heading2 mt-3 mb-4">{c.equipos.titulo}</h2>
               <p className="body1" style={{ color: "var(--secondary)" }}>
-                Los más cotizados por dueños de negocio en mayo 2026. Catálogo sin precios públicos — cotiza directo.
+                {c.equipos.texto}
               </p>
             </div>
-            <a href="#" className="btn-outline-primary">
-              Ver catálogo completo
+            <a href="https://crtonline.com.mx" target="_blank" rel="noopener" className="btn-outline-primary">
+              {c.equipos.boton}
               <ArrowRight size={16} weight="bold" />
             </a>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {productos.map((p) => (
-              <div key={p.nombre} className="product-item">
+            {productos.map((p, i) => (
+              <div key={i} className="product-item">
                 <div className="product-thumb">
                   <div
                     className="aspect-square bg-cover bg-center"
@@ -317,10 +268,10 @@ export default function Home() {
                 <div className="pt-4 pb-2 px-1">
                   <h4 className="text-title font-semibold product-name mb-3">{p.nombre}</h4>
                   <div className="flex gap-2 mt-3">
-                    <a className="flex-1 text-center py-2.5 rounded-full text-xs font-semibold uppercase text-white transition" style={{ background: "var(--primary)" }}>
+                    <a href={p.ficha || undefined} target={p.ficha ? "_blank" : undefined} rel="noopener" className="flex-1 text-center py-2.5 rounded-full text-xs font-semibold uppercase text-white transition" style={{ background: "var(--primary)" }}>
                       Ficha PDF
                     </a>
-                    <a className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-xs font-semibold uppercase text-white transition" style={{ background: p.color }}>
+                    <a href={a.waLink} target="_blank" rel="noopener" className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-xs font-semibold uppercase text-white transition" style={{ background: p.color }}>
                       <WhatsappLogo size={14} weight="fill" />
                       Cotizar
                     </a>
@@ -337,25 +288,25 @@ export default function Home() {
         <div className="container">
           <div className="grid lg:grid-cols-12 gap-12 items-start">
             <div className="lg:col-span-5">
-              <span className="text-sub-display" style={{ color: "var(--primary-light)" }}>Programa de distribuidores</span>
-              <h2 className="heading2 mt-3 mb-5">¿Vendes equipo profesional?{" "}
-                <span style={{ color: "var(--primary-light)" }}>Sé parte de la red CRT.</span>
+              <span className="text-sub-display" style={{ color: "var(--primary-light)" }}>{c.distribuidores.etiqueta}</span>
+              <h2 className="heading2 mt-3 mb-5">{c.distribuidores.titulo}{" "}
+                <span style={{ color: "var(--primary-light)" }}>{c.distribuidores.resaltado}</span>
               </h2>
               <p className="body1 mb-8" style={{ color: "var(--secondary)" }}>
-                Trabajamos con +200 distribuidores en todo el país. Sin portal ni claves complicadas — un asesor real te contesta por WhatsApp con precios escalonados, fichas y disponibilidad.
+                {c.distribuidores.texto}
               </p>
               <div className="flex flex-wrap gap-3">
-                <a href="#" className="btn-primary">
+                <a href={a.waLink} target="_blank" rel="noopener" className="btn-primary">
                   <WhatsappLogo size={18} weight="fill" />
-                  Pedir alta como distribuidor
+                  {c.distribuidores.boton}
                 </a>
               </div>
             </div>
 
             <div className="lg:col-span-7">
               <div className="grid sm:grid-cols-2 gap-4">
-                {distribuidorBeneficios.map((b) => (
-                  <div key={b.titulo} className="bg-white rounded-2xl p-6 border hover:shadow-card transition" style={{ borderColor: "var(--line)" }}>
+                {distribuidorBeneficios.map((b, i) => (
+                  <div key={i} className="bg-white rounded-2xl p-6 border hover:shadow-card transition" style={{ borderColor: "var(--line)" }}>
                     <div
                       className="w-11 h-11 rounded-xl flex items-center justify-center mb-4 text-white"
                       style={{ background: "var(--primary)" }}
@@ -377,21 +328,21 @@ export default function Home() {
         <div className="container">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
             <div className="max-w-2xl">
-              <span className="text-sub-display" style={{ color: "var(--primary)" }}>Guías y recursos</span>
-              <h2 className="heading2 mt-3 mb-4">Cómo equipar tu negocio</h2>
+              <span className="text-sub-display" style={{ color: "var(--primary)" }}>{c.blog.etiqueta}</span>
+              <h2 className="heading2 mt-3 mb-4">{c.blog.titulo}</h2>
               <p className="body1" style={{ color: "var(--secondary)" }}>
-                Guías prácticas, comparativas de equipos y consejos para emprendedores que abren su primer negocio.
+                {c.blog.texto}
               </p>
             </div>
-            <a href="#" className="btn-outline-primary">
-              Ver todas las guías
+            <a href="/blog" className="btn-outline-primary">
+              {c.blog.boton}
               <ArrowRight size={16} weight="bold" />
             </a>
           </div>
 
           <div className="grid md:grid-cols-3 gap-5">
-            {blog.map((post) => (
-              <a key={post.titulo} href="#" className="group bg-white rounded-2xl overflow-hidden border hover:shadow-card-lg transition" style={{ borderColor: "var(--line)" }}>
+            {blog.map((post, i) => (
+              <a key={i} href={post.href} className="group bg-white rounded-2xl overflow-hidden border hover:shadow-card-lg transition" style={{ borderColor: "var(--line)" }}>
                 <div
                   className="aspect-[16/10] bg-cover bg-center relative"
                   style={{ backgroundImage: `url('${post.img}')` }}
@@ -421,19 +372,19 @@ export default function Home() {
         <div className="container">
           <div className="max-w-3xl mx-auto text-center text-white">
             <h2 className="heading2 mb-5">
-              ¿Tu negocio necesita equipo profesional?
+              {c.cta.titulo}
             </h2>
             <p className="body1 mb-8 text-white/80 max-w-2xl mx-auto">
-              Cuéntanos qué quieres equipar — un asesor te contesta por WhatsApp con propuesta, ficha técnica y disponibilidad. Sin formularios largos.
+              {c.cta.texto}
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <a href="#" className="btn-accent">
+              <a href={a.waLink} target="_blank" rel="noopener" className="btn-accent">
                 <WhatsappLogo size={18} weight="fill" />
-                Cotizar por WhatsApp
+                {c.cta.botonWhatsapp}
               </a>
-              <a href="#" className="btn-outline-white">
+              <a href={a.telLink} className="btn-outline-white">
                 <Phone size={18} weight="fill" />
-                Llamar a un asesor
+                {c.cta.botonLlamar}
               </a>
             </div>
           </div>
@@ -446,17 +397,21 @@ export default function Home() {
           <div className="grid md:grid-cols-12 gap-10">
             <div className="md:col-span-5">
               <div className="flex items-baseline gap-2 mb-5">
-                <span className="text-3xl font-bold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>CRT</span>
+                <span className="text-3xl font-bold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>{a.menu.marca1}</span>
                 <span className="text-xs font-semibold uppercase tracking-[2px] px-2 py-0.5 rounded-full" style={{ background: "var(--accent)", color: "var(--primary)" }}>
-                  Profesional
+                  {a.menu.marca2}
                 </span>
               </div>
               <p className="caption1 text-white/70 max-w-md mb-6">
-                Catálogo profesional para distribuidores y dueños de negocio. Equipos para cafetería, restaurante, panadería y heladería.
+                {c.pie.texto}
               </p>
               <div className="flex gap-3">
-                {[<InstagramLogo key="ig" size={18} weight="fill" />, <FacebookLogo key="fb" size={18} weight="fill" />, <LinkedinLogo key="li" size={18} weight="fill" />].map((icon, i) => (
-                  <a key={i} href="#" className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 transition">
+                {[
+                  { icon: <InstagramLogo key="ig" size={18} weight="fill" />, href: a.redes.instagram },
+                  { icon: <FacebookLogo key="fb" size={18} weight="fill" />, href: a.redes.facebook },
+                  { icon: <LinkedinLogo key="li" size={18} weight="fill" />, href: a.redes.linkedin },
+                ].map(({ icon, href }, i) => (
+                  <a key={i} href={href || "#"} target={href ? "_blank" : undefined} rel="noopener" className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 transition">
                     {icon}
                   </a>
                 ))}
@@ -466,8 +421,15 @@ export default function Home() {
             <div className="md:col-span-3">
               <p className="caption2 uppercase tracking-[2px] font-semibold text-white/50 mb-4">Catálogo</p>
               <ul className="space-y-3">
-                {["Restaurantes", "Cafeterías", "Panadería", "Helados", "Marcas", "Distribuidores"].map((l) => (
-                  <li key={l}><a href="#" className="caption1 text-white/75 hover:text-white transition">{l}</a></li>
+                {[
+                  { l: "Restaurantes", href: "/restaurante" },
+                  { l: "Cafeterías", href: "/cafeteria" },
+                  { l: "Panadería", href: "/panaderia" },
+                  { l: "Helados", href: "/heladeria" },
+                  { l: "Marcas", href: "#marcas" },
+                  { l: "Distribuidores", href: "/distribuidores" },
+                ].map(({ l, href }) => (
+                  <li key={l}><a href={href} className="caption1 text-white/75 hover:text-white transition">{l}</a></li>
                 ))}
               </ul>
             </div>
@@ -477,22 +439,22 @@ export default function Home() {
               <ul className="space-y-3">
                 <li className="flex items-start gap-2 caption1 text-white/75">
                   <WhatsappLogo size={16} weight="fill" className="mt-0.5 flex-shrink-0" />
-                  <span>WhatsApp: +52 81 1234 5678</span>
+                  <span>{c.pie.whatsapp}</span>
                 </li>
                 <li className="flex items-start gap-2 caption1 text-white/75">
                   <Envelope size={16} weight="fill" className="mt-0.5 flex-shrink-0" />
-                  <span>profesional@crtglobal.com.mx</span>
+                  <span>{c.pie.correo}</span>
                 </li>
                 <li className="flex items-start gap-2 caption1 text-white/75">
                   <MapPin size={16} weight="fill" className="mt-0.5 flex-shrink-0" />
-                  <span>Showroom flagship: Venustiano Carranza 650 Sur, Monterrey</span>
+                  <span>{c.pie.direccion}</span>
                 </li>
               </ul>
             </div>
           </div>
 
           <div className="border-t border-white/10 mt-12 pt-6 flex flex-col md:flex-row justify-between gap-4 caption2 text-white/50">
-            <span>© 2026 CRT Profesional · Grupo Criotec</span>
+            <span>{c.pie.derechos}</span>
             <div className="flex gap-6">
               <a href="https://crtglobal.com.mx" className="hover:text-white transition">CRT Global</a>
               <a href="https://crtonline.com.mx" className="hover:text-white transition">CRT Online</a>

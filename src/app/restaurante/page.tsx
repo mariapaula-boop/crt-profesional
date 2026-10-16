@@ -1,9 +1,15 @@
 import {
   ForkKnife, Drop, Knife, Archive, Snowflake, Package,
 } from "@phosphor-icons/react/dist/ssr";
-import VerticalLayout, { type Categoria } from "../_components/VerticalLayout";
+import VerticalLayout from "../_components/VerticalLayout";
+import { contenido } from "@/lib/cms";
+import { giroRestaurante as pagina } from "@/contenido/giros";
+import { getAjustes } from "@/contenido/ajustes";
+import { metadataCon } from "@/contenido/comun";
+import { productosDelGiro } from "@/lib/productos";
+import { getPostsCms } from "@/lib/blog";
 
-export const metadata = {
+const metadataBase = {
   title: "Equipa tu restaurante · CRT Profesional",
   description:
     "Hornos combi y convección, lavavajillas industriales, procesadores, empacadoras al vacío y refrigeración profesional. Asesoría, showroom Monterrey y entrega nacional.",
@@ -17,31 +23,32 @@ export const metadata = {
   },
 };
 
-// Categorías del brief sec 3.A (verificadas)
-const categorias: Categoria[] = [
-  { nombre: "Hornos combi y convección", icon: <ForkKnife size={26} weight="duotone" />, img: "https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=800&q=80&auto=format&fit=crop" },
-  { nombre: "Lavavajillas industriales", icon: <Drop size={26} weight="duotone" />, img: "https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?w=800&q=80&auto=format&fit=crop" },
-  { nombre: "Procesadores y cortadoras", icon: <Knife size={26} weight="duotone" />, img: "https://images.unsplash.com/photo-1556909211-d5b07c20b3c5?w=800&q=80&auto=format&fit=crop" },
-  { nombre: "Empacadoras al vacío", icon: <Archive size={26} weight="duotone" />, img: "https://images.unsplash.com/photo-1604908554027-fd9a4a89e8e6?w=800&q=80&auto=format&fit=crop" },
-  { nombre: "Refrigeración profesional", icon: <Snowflake size={26} weight="duotone" />, img: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&q=80&auto=format&fit=crop" },
-  { nombre: "Túnel de lavado", icon: <Package size={26} weight="duotone" />, img: "https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=800&q=80&auto=format&fit=crop" },
+export async function generateMetadata() {
+  const c = await contenido(pagina);
+  return metadataCon(c.seo, pagina.campos.seo.defecto, metadataBase);
+}
+
+// Textos e imágenes: src/contenido/giros.ts (editables en el administrador).
+const iconos = [
+  <ForkKnife key="0" size={26} weight="duotone" />,
+  <Drop key="1" size={26} weight="duotone" />,
+  <Knife key="2" size={26} weight="duotone" />,
+  <Archive key="3" size={26} weight="duotone" />,
+  <Snowflake key="4" size={26} weight="duotone" />,
+  <Package key="5" size={26} weight="duotone" />,
 ];
 
-export default function RestaurantePage() {
+export default async function RestaurantePage() {
+  const [c, a, productos, posts] = await Promise.all([contenido(pagina), getAjustes(), productosDelGiro("Restaurante"), getPostsCms()]);
   return (
     <VerticalLayout
       verticalActiva="Restaurantes"
-      pillText="Equipa tu restaurante"
       pillIcon={<ForkKnife size={14} weight="fill" />}
-      h1Word="restaurante"
-      heroImg="https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=900&q=85&auto=format&fit=crop"
-      heroImgAlt="Cocina profesional de restaurante con equipo CRT"
-      categorias={categorias}
-      otrasMarcas={["CRT", "Lorem", "Lorem", "Lorem", "Lorem"]}
-      marcaImg="https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=900&q=85&auto=format&fit=crop"
-      marcaImgAlt="Horno combi profesional para restaurante"
-      showroomImg="https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=900&q=85&auto=format&fit=crop"
-      ctaButtonText="Cotizar mi restaurante"
+      iconos={iconos}
+      c={c}
+      a={a}
+      productos={productos}
+      posts={posts}
     />
   );
 }
