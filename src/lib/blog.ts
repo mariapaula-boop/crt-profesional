@@ -71,9 +71,11 @@ function desdeWp(p: WpPost): PostBlog | null {
  */
 export async function getPostsCms(): Promise<PostBlog[] | null> {
   const lista: PostBlog[] = [];
-  for (let pagina = 1; pagina <= 10; pagina++) {
+  // Tope de seguridad muy holgado (10,000 artículos) para no quedar en un ciclo infinito.
+  for (let pagina = 1; pagina <= 100; pagina++) {
     const r = await wp<WpPost[]>(`/wp/v2/posts?per_page=100&page=${pagina}&_embed=wp:featuredmedia,wp:term`);
-    if (!Array.isArray(r)) return pagina === 1 ? null : lista;
+    // Si falla cualquier página, se trata como falla completa (no como lista parcial).
+    if (!Array.isArray(r)) return null;
     lista.push(...r.map(obj).map(desdeWp).filter((p): p is PostBlog => p !== null));
     if (r.length < 100) break;
   }
