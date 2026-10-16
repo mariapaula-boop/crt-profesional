@@ -11,11 +11,21 @@ import { mezclar, type Campos, type Pagina, type ValoresDe } from "./campos";
 // definir CMS_URL en Vercel.
 export const CMS_URL = (process.env.CMS_URL || "https://darkorange-guanaco-801707.hostingersite.com").replace(/\/$/, "");
 export const CMS_TAG = "cms";
-const REVALIDAR_CADA = 60; // segundos
+// El WordPress avisa al guardar (/api/revalidar), así que los cambios salen al momento;
+// esto es solo la red de seguridad. 5 minutos para no cargar el hosting compartido.
+const REVALIDAR_CADA = 300; // segundos
 
 const ESPERA_MAX = 6000; // ms
 
 async function pedir<T>(ruta: string): Promise<T | null> {
+  // Un reintento: el hosting compartido a veces responde 504 en picos de carga.
+  const r = await pedirUnaVez<T>(ruta);
+  if (r !== null) return r;
+  await new Promise((res) => setTimeout(res, 800));
+  return pedirUnaVez<T>(ruta);
+}
+
+async function pedirUnaVez<T>(ruta: string): Promise<T | null> {
   let reloj: ReturnType<typeof setTimeout> | undefined;
   try {
     const peticion = (async () => {

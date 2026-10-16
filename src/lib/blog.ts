@@ -92,7 +92,11 @@ export async function getPostsBlog(): Promise<PostBlog[]> {
  */
 export async function getPostsParaArticulo(): Promise<PostBlog[]> {
   const cms = await getPostsCms();
-  if (cms === null) throw new Error("El administrador de contenido no respondió");
+  if (cms === null) {
+    // En el build no hay versión anterior que conservar: se usa el respaldo.
+    if (process.env.NEXT_PHASE === "phase-production-build") return postsRespaldo;
+    throw new Error("El administrador de contenido no respondió");
+  }
   return cms.length > 0 ? cms : postsRespaldo;
 }
 
