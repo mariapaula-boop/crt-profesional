@@ -39,7 +39,7 @@ const iconos = [
 ];
 
 export default async function PanaderiaPage() {
-  const [c, a, productos, posts] = await Promise.all([contenido(pagina), getAjustes(), productosDelGiro("Panadería"), getPostsCms()]);
+  const [c, a, productos, posts] = await Promise.all([contenido(pagina), getAjustes(), productosDelGiro("Panadería"), getPostsCms().then((p) => p ?? [])]);
   return (
     <VerticalLayout
       verticalActiva="Panadería"

@@ -1,6 +1,7 @@
 // Blog de CRT Profesional: los artículos se escriben en el administrador (Blog).
-// Respaldo: si no hay artículos o el WordPress no responde, los de src/lib/posts.ts.
+// Respaldo: si el WordPress no tiene artículos, se usan los borradores de src/lib/posts.ts.
 import { wp } from "@/lib/cms";
+import { sanitizar, textoPlano, decodificar } from "@/lib/cms/html";
 import { posts as postsRespaldo, type Post } from "@/lib/posts";
 
 export type PostBlog = Post & {
@@ -11,81 +12,88 @@ export type PostBlog = Post & {
   color?: string;
 };
 
-type WpTermino = { taxonomy?: string; name?: string };
-type WpPost = {
-  slug?: string;
-  date?: string;
-  title?: { rendered?: string };
-  excerpt?: { rendered?: string };
-  content?: { rendered?: string };
-  _embedded?: { "wp:featuredmedia"?: { source_url?: string }[]; "wp:term"?: WpTermino[][] };
-};
+type WpPost = Record<string, unknown>;
 
 const SIN_CATEGORIA = ["uncategorized", "sin categoría", "sin categoria"];
 const COLORES: Record<string, string> = {};
 
-const ENTIDADES: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " ", hellip: "…", ndash: "–", mdash: "—", lsquo: "‘", rsquo: "’", ldquo: "“", rdquo: "”" };
+const obj = (v: unknown): Record<string, unknown> => (v && typeof v === "object" && !Array.isArray(v) ? (v as Record<string, unknown>) : {});
+const rendered = (v: unknown) => obj(v).rendered;
 
-export function decodificar(s: string): string {
-  return s
-    .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
-    .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCodePoint(parseInt(n, 16)))
-    .replace(/&([a-z]+);/gi, (m, n) => ENTIDADES[n.toLowerCase()] ?? m);
-}
-
-function textoPlano(html: string): string {
-  return decodificar(html.replace(/<[^>]*>/g, " ")).replace(/\s+/g, " ").trim();
-}
-
-/** Quita lo que no debe llegar a la página: scripts, estilos, eventos y enlaces javascript:. */
-export function limpiarHtml(html: string): string {
-  return html
-    // Videos de YouTube/Vimeo sí se quedan; cualquier otro iframe se quita.
-    .replace(/<iframe\b[^>]*>[\s\S]*?<\/iframe>/gi, (m) => (/src=["']https:\/\/(www\.)?(youtube\.com|youtube-nocookie\.com|player\.vimeo\.com)\//i.test(m) ? m : ""))
-    .replace(/<(script|style|object|embed|form)\b[\s\S]*?<\/\1>/gi, "")
-    .replace(/<(script|style|object|embed|link|meta)\b[^>]*\/?>/gi, "")
-    .replace(/\s+on[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "")
-    .replace(/(href|src)\s*=\s*(["'])\s*javascript:[^"']*\2/gi, '$1="#"');
-}
-
-function fechaLarga(iso: string): string {
+function fechaLarga(isoGmt: string): string {
   try {
-    return new Intl.DateTimeFormat("es-MX", { day: "numeric", month: "long", year: "numeric", timeZone: "America/Monterrey" }).format(new Date(iso));
+    const d = new Date(isoGmt);
+    if (Number.isNaN(d.getTime())) return "";
+    return new Intl.DateTimeFormat("es-MX", { day: "numeric", month: "long", year: "numeric", timeZone: "America/Monterrey" }).format(d);
   } catch {
     return "";
   }
 }
 
 function desdeWp(p: WpPost): PostBlog | null {
-  if (!p || typeof p !== "object" || !p.slug) return null;
-  const html = limpiarHtml(p.content?.rendered ?? "");
-  const palabras = textoPlano(html).split(" ").filter(Boolean).length;
-  const terminos = (p._embedded?.["wp:term"] ?? []).flat().filter((t) => t?.taxonomy === "category" && t.name && !SIN_CATEGORIA.includes(t.name.toLowerCase()));
-  const categoria = decodificar(terminos[0]?.name ?? "Blog");
-  const resumen = textoPlano(p.excerpt?.rendered ?? "").replace(/\s*\[…\]$|\s*\[&hellip;\]$/, "…");
-  return {
-    slug: p.slug,
-    categoria,
-    titulo: textoPlano(p.title?.rendered ?? ""),
-    resumen,
-    fecha: p.date ? fechaLarga(p.date) : "",
-    fechaIso: p.date,
-    lectura: `${Math.max(1, Math.round(palabras / 200))} min de lectura`,
-    img: p._embedded?.["wp:featuredmedia"]?.[0]?.source_url ?? "",
-    color: COLORES[categoria] ?? "#1E4D80",
-    html,
-  };
+  try {
+    const slug = typeof p.slug === "string" ? p.slug : "";
+    if (!slug) return null;
+    const html = sanitizar(rendered(p.content));
+    const palabras = textoPlano(html).split(" ").filter(Boolean).length;
+    const embebido = obj(p._embedded);
+    const terminos = (Array.isArray(embebido["wp:term"]) ? embebido["wp:term"] : [])
+      .flat()
+      .map(obj)
+      .filter((t) => t.taxonomy === "category" && typeof t.name === "string" && !SIN_CATEGORIA.includes(t.name.toLowerCase()));
+    const categoria = decodificar(terminos[0]?.name) || "Blog";
+    const medios = Array.isArray(embebido["wp:featuredmedia"]) ? embebido["wp:featuredmedia"] : [];
+    const img = obj(medios[0]).source_url;
+    // date_gmt viene sin zona: se marca como UTC para no desplazar el día.
+    const gmt = typeof p.date_gmt === "string" ? `${p.date_gmt}Z` : typeof p.date === "string" ? p.date : "";
+    const titulo = textoPlano(rendered(p.title));
+    if (!titulo) return null;
+    return {
+      slug,
+      categoria,
+      titulo,
+      resumen: textoPlano(rendered(p.excerpt)).replace(/\s*\[…\]$/, "…"),
+      fecha: gmt ? fechaLarga(gmt) : "",
+      fechaIso: gmt,
+      lectura: `${Math.max(1, Math.round(palabras / 200))} min de lectura`,
+      img: typeof img === "string" && /^https?:\/\//.test(img) ? img : "",
+      color: COLORES[categoria] ?? "#1E4D80",
+      html,
+    };
+  } catch {
+    return null;
+  }
 }
 
-/** Solo los artículos publicados en el administrador (vacío si no hay o si no responde). */
-export async function getPostsCms(): Promise<PostBlog[]> {
-  const r = await wp<WpPost[]>("/wp/v2/posts?per_page=100&_embed=wp:featuredmedia,wp:term");
-  return Array.isArray(r) ? r.map(desdeWp).filter((p): p is PostBlog => p !== null) : [];
+/**
+ * Artículos del administrador, todas las páginas (de 100 en 100).
+ * null = el WordPress no respondió; [] = respondió pero no hay artículos.
+ */
+export async function getPostsCms(): Promise<PostBlog[] | null> {
+  const lista: PostBlog[] = [];
+  for (let pagina = 1; pagina <= 10; pagina++) {
+    const r = await wp<WpPost[]>(`/wp/v2/posts?per_page=100&page=${pagina}&_embed=wp:featuredmedia,wp:term`);
+    if (!Array.isArray(r)) return pagina === 1 ? null : lista;
+    lista.push(...r.map(obj).map(desdeWp).filter((p): p is PostBlog => p !== null));
+    if (r.length < 100) break;
+  }
+  return lista;
 }
 
+/** Para listados: los del administrador o, si no hay, los borradores. */
 export async function getPostsBlog(): Promise<PostBlog[]> {
-  const lista = await getPostsCms();
-  return lista.length > 0 ? lista : postsRespaldo;
+  const cms = await getPostsCms();
+  return cms && cms.length > 0 ? cms : postsRespaldo;
+}
+
+/**
+ * Para la página de un artículo. Si el WordPress no responde se lanza un error en vez
+ * de un 404: así Next conserva la versión que ya tenía en caché.
+ */
+export async function getPostsParaArticulo(): Promise<PostBlog[]> {
+  const cms = await getPostsCms();
+  if (cms === null) throw new Error("El administrador de contenido no respondió");
+  return cms.length > 0 ? cms : postsRespaldo;
 }
 
 export function relacionados(lista: PostBlog[], p: PostBlog, limit = 3): PostBlog[] {

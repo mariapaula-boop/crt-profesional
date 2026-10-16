@@ -39,7 +39,7 @@ const iconos = [
 ];
 
 export default async function HeladeriaPage() {
-  const [c, a, productos, posts] = await Promise.all([contenido(pagina), getAjustes(), productosDelGiro("Heladería"), getPostsCms()]);
+  const [c, a, productos, posts] = await Promise.all([contenido(pagina), getAjustes(), productosDelGiro("Heladería"), getPostsCms().then((p) => p ?? [])]);
   return (
     <VerticalLayout
       verticalActiva="Helados"

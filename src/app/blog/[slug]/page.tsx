@@ -4,7 +4,7 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 import Navbar from "../../_components/Navbar";
 import Footer from "../../_components/Footer";
-import { getPostsBlog, relacionados } from "@/lib/blog";
+import { getPostsBlog, getPostsParaArticulo, relacionados } from "@/lib/blog";
 import { contenido } from "@/lib/cms";
 import { blog } from "@/contenido/blog";
 import { getAjustes } from "@/contenido/ajustes";
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: Params) {
 
 export default async function BlogPostPage({ params }: Params) {
   const { slug } = await params;
-  const [lista, c, a] = await Promise.all([getPostsBlog(), contenido(blog), getAjustes()]);
+  const [lista, c, a] = await Promise.all([getPostsParaArticulo(), contenido(blog), getAjustes()]);
   const p = lista.find((q) => q.slug === slug);
   if (!p) notFound();
 

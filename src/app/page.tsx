@@ -39,12 +39,12 @@ const iconosBeneficios = [
 const colorDeGiro: Record<string, string> = { "Cafetería": "var(--primary)", "Panadería": "var(--primary-light)", "Helados": "var(--accent)", "Heladería": "var(--accent)", "Restaurante": "var(--primary-dark)" };
 
 export default async function Home() {
-  const [c, a, publicados, posts] = await Promise.all([contenido(home), getAjustes(), getProductos(), getPostsCms()]);
+  const [c, a, publicados, posts] = await Promise.all([contenido(home), getAjustes(), getProductos(), getPostsCms().then((p) => p ?? [])]);
   const verticales = (Object.keys(decoVerticales) as (keyof typeof decoVerticales)[]).map((slug) => ({ slug, ...c.verticales[slug], ...decoVerticales[slug] }));
   const marcas = c.marcas.lista;
   const productos = publicados.length > 0
-    ? publicados.slice(0, 4).map((p) => ({ nombre: p.nombre, tag: p.etiqueta, color: p.color || colorDeGiro[p.giros[0]] || "var(--primary)", img: p.img, ficha: p.ficha || p.tienda }))
-    : c.equipos.ejemplos.map((e) => ({ nombre: e.nombre, tag: e.tag, color: colorDeGiro[e.tag] || "var(--primary)", img: e.img, ficha: "" }));
+    ? publicados.slice(0, 4).map((p) => ({ nombre: p.nombre, tag: p.etiqueta, color: p.color || colorDeGiro[p.giros[0]] || "var(--primary)", img: p.img, ficha: p.ficha || p.tienda, textoFicha: p.ficha ? "Ficha PDF" : p.tienda ? "Ver en tienda" : "Ficha PDF" }))
+    : c.equipos.ejemplos.map((e) => ({ nombre: e.nombre, tag: e.tag, color: colorDeGiro[e.tag] || "var(--primary)", img: e.img, ficha: "", textoFicha: "Ficha PDF" }));
   const distribuidorBeneficios = c.distribuidores.beneficios.map((b, i) => ({ ...b, icon: iconosBeneficios[i % iconosBeneficios.length] }));
   const blog = posts.length > 0
     ? posts.slice(0, 3).map((p) => ({ categoria: p.categoria, titulo: p.titulo, fecha: p.fecha, img: p.img ?? "", color: colorDeGiro[p.categoria] || "var(--primary)", href: `/blog/${p.slug}` }))
@@ -269,7 +269,7 @@ export default async function Home() {
                   <h4 className="text-title font-semibold product-name mb-3">{p.nombre}</h4>
                   <div className="flex gap-2 mt-3">
                     <a href={p.ficha || undefined} target={p.ficha ? "_blank" : undefined} rel="noopener" className="flex-1 text-center py-2.5 rounded-full text-xs font-semibold uppercase text-white transition" style={{ background: "var(--primary)" }}>
-                      Ficha PDF
+                      {p.textoFicha}
                     </a>
                     <a href={a.waLink} target="_blank" rel="noopener" className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-xs font-semibold uppercase text-white transition" style={{ background: p.color }}>
                       <WhatsappLogo size={14} weight="fill" />

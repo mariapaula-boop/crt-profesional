@@ -39,7 +39,7 @@ const iconos = [
 ];
 
 export default async function RestaurantePage() {
-  const [c, a, productos, posts] = await Promise.all([contenido(pagina), getAjustes(), productosDelGiro("Restaurante"), getPostsCms()]);
+  const [c, a, productos, posts] = await Promise.all([contenido(pagina), getAjustes(), productosDelGiro("Restaurante"), getPostsCms().then((p) => p ?? [])]);
   return (
     <VerticalLayout
       verticalActiva="Restaurantes"
