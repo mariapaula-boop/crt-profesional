@@ -14,15 +14,16 @@ type Meta = Record<string, unknown>;
 
 /**
  * Mezcla el SEO editable con la metadata fija de la página (canonical, keywords,
- * robots…). Mientras nadie lo cambie, la página conserva su metadata original tal
- * cual (incluidos los textos propios de Open Graph); lo que se edite en el
- * administrador gana en título, descripción e imagen, también al compartir.
+ * robots, imagen por defecto…). Título y descripción siempre salen del administrador,
+ * también al compartir; la imagen, si se cambia ahí.
  */
 export function metadataCon(s: Seo, def: Seo, base: Meta = {}): Meta {
   const og = { ...((base.openGraph as Meta | undefined) ?? {}) };
   const tw = { ...((base.twitter as Meta | undefined) ?? {}) };
-  if (s.titulo !== def.titulo) { og.title = s.titulo; tw.title = s.titulo; }
-  if (s.descripcion !== def.descripcion) { og.description = s.descripcion; tw.description = s.descripcion; }
+  // Al compartir sale lo mismo que en Google: un solo lugar para editarlo.
+  og.title = s.titulo; tw.title = s.titulo;
+  og.description = s.descripcion; tw.description = s.descripcion;
+  if (Array.isArray(og.images)) og.images = (og.images as Meta[]).map((im) => ({ ...im, alt: s.titulo }));
   if (s.imagen && s.imagen !== def.imagen) {
     og.images = [{ url: s.imagen, width: 1200, height: 630, alt: s.titulo }];
     tw.images = [s.imagen];

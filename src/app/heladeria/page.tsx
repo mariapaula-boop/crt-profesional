@@ -42,7 +42,7 @@ export default async function HeladeriaPage() {
   const [c, a, productos, posts] = await Promise.all([contenido(pagina), getAjustes(), productosDelGiro("Heladería"), getPostsCms().then((p) => p ?? [])]);
   return (
     <VerticalLayout
-      verticalActiva="Helados"
+      verticalActiva="/heladeria"
       pillIcon={<IceCream size={14} weight="fill" />}
       iconos={iconos}
       c={c}

@@ -45,7 +45,7 @@ export default async function BlogPostPage({ params }: Params) {
 
   return (
     <>
-      <Navbar activo="Blog" />
+      <Navbar activo="/blog" />
 
       {/* ====================== HERO ====================== */}
       <section className="relative pt-32 pb-12 lg:pt-40 lg:pb-16 overflow-hidden" style={{ background: "var(--surface)" }}>
@@ -63,11 +63,11 @@ export default async function BlogPostPage({ params }: Params) {
               <li>
                 <a href="/" className="flex items-center gap-1.5 hover:opacity-70 transition">
                   <House size={14} weight="duotone" />
-                  Inicio
+                  {c.hero.migaInicio}
                 </a>
               </li>
               <li><CaretRight size={12} weight="bold" style={{ color: "var(--secondary2)" }} /></li>
-              <li><a href="/blog" className="hover:opacity-70 transition">Blog</a></li>
+              <li><a href="/blog" className="hover:opacity-70 transition">{c.hero.migaBlog}</a></li>
               <li><CaretRight size={12} weight="bold" style={{ color: "var(--secondary2)" }} /></li>
               <li className="font-semibold truncate max-w-[260px] sm:max-w-none" style={{ color: "var(--primary)" }}>
                 {p.titulo}
@@ -87,13 +87,13 @@ export default async function BlogPostPage({ params }: Params) {
 
             <div className="flex flex-wrap items-center gap-5 text-sm" style={{ color: "var(--secondary)" }}>
               <span className="flex items-center gap-2">
-                <User size={14} weight="duotone" /> Equipo editorial CRT Profesional
+                <User size={14} weight="duotone" /> {c.articulo.autor}
               </span>
               <span className="flex items-center gap-2">
                 <Calendar size={14} weight="duotone" /> {p.fecha}
               </span>
               <span className="flex items-center gap-2">
-                <Clock size={14} weight="duotone" /> {p.lectura === "—" ? "Lectura ~5 min" : p.lectura}
+                <Clock size={14} weight="duotone" /> {p.lectura === "—" ? c.articulo.lectura : p.lectura}
               </span>
             </div>
           </div>
@@ -190,16 +190,16 @@ export default async function BlogPostPage({ params }: Params) {
             <div className="flex items-end justify-between mb-10 gap-6">
               <div>
                 <span className="text-sub-display" style={{ color: "var(--accent-dark)" }}>
-                  Sigue leyendo
+                  {c.relacionados.etiqueta}
                 </span>
-                <h2 className="heading3 mt-3" style={{ color: "var(--primary)" }}>Artículos relacionados</h2>
+                <h2 className="heading3 mt-3" style={{ color: "var(--primary)" }}>{c.relacionados.titulo}</h2>
               </div>
               <a
                 href="/blog"
                 className="hidden sm:inline-flex items-center gap-2 text-sm font-semibold transition hover:gap-3"
                 style={{ color: "var(--primary)" }}
               >
-                Ver todo el blog
+                {c.relacionados.boton}
                 <ArrowRight size={16} weight="bold" />
               </a>
             </div>

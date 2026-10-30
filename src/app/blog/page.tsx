@@ -31,7 +31,7 @@ export default async function BlogPage() {
   const [c, posts] = await Promise.all([contenido(blog), getPostsBlog()]);
   return (
     <>
-      <Navbar activo="Blog" />
+      <Navbar activo="/blog" />
 
       {/* ====================== HERO ====================== */}
       <section className="relative pt-32 pb-16 lg:pt-40 lg:pb-20 overflow-hidden" style={{ background: "var(--surface)" }}>
@@ -49,11 +49,11 @@ export default async function BlogPage() {
               <li>
                 <a href="/" className="flex items-center gap-1.5 hover:opacity-70 transition">
                   <House size={14} weight="duotone" />
-                  Inicio
+                  {c.hero.migaInicio}
                 </a>
               </li>
               <li><CaretRight size={12} weight="bold" style={{ color: "var(--secondary2)" }} /></li>
-              <li className="font-semibold" style={{ color: "var(--primary)" }}>Blog</li>
+              <li className="font-semibold" style={{ color: "var(--primary)" }}>{c.hero.migaBlog}</li>
             </ol>
           </nav>
 
@@ -66,8 +66,8 @@ export default async function BlogPage() {
               {c.hero.pill}
             </span>
             <h1 className="heading1 mb-6" style={{ color: "var(--primary)" }}>
-              Blog y{" "}
-              <span style={{ color: "var(--accent-dark)" }}>recursos</span>.
+              {c.hero.titulo}{" "}
+              <span style={{ color: "var(--accent-dark)" }}>{c.hero.resaltado}</span>.
             </h1>
             <p className="body1 max-w-xl" style={{ color: "var(--secondary)" }}>
               {c.hero.texto}
@@ -111,7 +111,7 @@ export default async function BlogPage() {
                     className="inline-flex items-center gap-1 text-sm font-semibold transition group-hover:gap-2"
                     style={{ color: "var(--primary)" }}
                   >
-                    Leer
+                    {c.hero.botonLeer}
                     <ArrowRight size={14} weight="bold" />
                   </span>
                 </div>

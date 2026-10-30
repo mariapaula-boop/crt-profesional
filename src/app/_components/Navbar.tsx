@@ -1,25 +1,15 @@
 import { WhatsappLogo, List } from "@phosphor-icons/react/dist/ssr";
 import { getAjustes } from "@/contenido/ajustes";
 
-export type NavbarActiveItem =
-  | "Cafeterías"
-  | "Restaurantes"
-  | "Panadería"
-  | "Helados"
-  | "Blog"
-  | "Distribuidores"
-  | "Visítanos"
-  | "Contacto"
-  | null;
+/** Ruta de la sección activa (ej. "/blog"); se compara con el enlace de cada elemento del menú. */
+export type NavbarActiveItem = string | null;
 
-const NAV_ITEMS: { label: string; href: string }[] = [
-  { label: "Restaurantes", href: "/restaurante" },
-  { label: "Cafeterías", href: "/cafeteria" },
-  { label: "Panadería", href: "/panaderia" },
-  { label: "Helados", href: "/heladeria" },
-  { label: "Distribuidores", href: "/distribuidores" },
-  { label: "Blog", href: "/blog" },
-];
+/** ¿El enlace del menú corresponde a la ruta activa? (ignora "/" final y mayúsculas). */
+export function enlaceActivo(enlace: string, activo: string | null): boolean {
+  if (!activo) return false;
+  const norm = (x: string) => x.trim().replace(/^https?:\/\/[^/]+/i, "").replace(/\/+$/, "").toLowerCase() || "/";
+  return norm(enlace) === norm(activo);
+}
 
 export default async function Navbar({ activo = null }: { activo?: NavbarActiveItem }) {
   const a = await getAjustes();
@@ -36,14 +26,14 @@ export default async function Navbar({ activo = null }: { activo?: NavbarActiveI
         </a>
 
         <div className="hidden lg:flex items-center gap-6">
-          {NAV_ITEMS.map((item) => (
+          {a.menu.enlaces.map((item, i) => (
             <a
-              key={item.label}
-              href={item.href}
+              key={i}
+              href={item.enlace || "#"}
               className="text-sm font-medium transition hover:opacity-70"
-              style={{ color: item.label === activo ? "var(--accent-dark)" : "var(--black)" }}
+              style={{ color: enlaceActivo(item.enlace, activo) ? "var(--accent-dark)" : "var(--black)" }}
             >
-              {item.label}
+              {item.texto}
             </a>
           ))}
         </div>

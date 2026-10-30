@@ -42,7 +42,7 @@ export default async function PanaderiaPage() {
   const [c, a, productos, posts] = await Promise.all([contenido(pagina), getAjustes(), productosDelGiro("Panadería"), getPostsCms().then((p) => p ?? [])]);
   return (
     <VerticalLayout
-      verticalActiva="Panadería"
+      verticalActiva="/panaderia"
       pillIcon={<Bread size={14} weight="fill" />}
       iconos={iconos}
       c={c}

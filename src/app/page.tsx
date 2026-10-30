@@ -43,8 +43,8 @@ export default async function Home() {
   const verticales = (Object.keys(decoVerticales) as (keyof typeof decoVerticales)[]).map((slug) => ({ slug, ...c.verticales[slug], ...decoVerticales[slug] }));
   const marcas = c.marcas.lista;
   const productos = publicados.length > 0
-    ? publicados.slice(0, 4).map((p) => ({ nombre: p.nombre, tag: p.etiqueta, color: p.color || colorDeGiro[p.giros[0]] || "var(--primary)", img: p.img, ficha: p.ficha || p.tienda, textoFicha: p.ficha ? "Ficha PDF" : p.tienda ? "Ver en tienda" : "Ficha PDF" }))
-    : c.equipos.ejemplos.map((e) => ({ nombre: e.nombre, tag: e.tag, color: colorDeGiro[e.tag] || "var(--primary)", img: e.img, ficha: "", textoFicha: "Ficha PDF" }));
+    ? publicados.slice(0, 4).map((p) => ({ nombre: p.nombre, tag: p.etiqueta, color: p.color || colorDeGiro[p.giros[0]] || "var(--primary)", img: p.img, ficha: p.ficha || p.tienda, textoFicha: p.ficha ? c.equipos.botonFicha : p.tienda ? c.equipos.botonTienda : c.equipos.botonFicha }))
+    : c.equipos.ejemplos.map((e) => ({ nombre: e.nombre, tag: e.tag, color: colorDeGiro[e.tag] || "var(--primary)", img: e.img, ficha: "", textoFicha: c.equipos.botonFicha }));
   const distribuidorBeneficios = c.distribuidores.beneficios.map((b, i) => ({ ...b, icon: iconosBeneficios[i % iconosBeneficios.length] }));
   const blog = posts.length > 0
     ? posts.slice(0, 3).map((p) => ({ categoria: p.categoria, titulo: p.titulo, fecha: p.fecha, img: p.img ?? "", color: colorDeGiro[p.categoria] || "var(--primary)", href: `/blog/${p.slug}` }))
@@ -64,16 +64,9 @@ export default async function Home() {
           </a>
 
           <div className="hidden lg:flex items-center gap-7">
-            {[
-              { label: "Restaurantes", href: "/restaurante" },
-              { label: "Cafeterías", href: "/cafeteria" },
-              { label: "Panadería", href: "/panaderia" },
-              { label: "Helados", href: "/heladeria" },
-              { label: "Marcas", href: "#marcas" },
-              { label: "Blog", href: "/blog" },
-            ].map((item) => (
-              <a key={item.label} href={item.href} className="text-sm font-medium hover:text-accent-dark transition" style={{ color: "var(--black)" }}>
-                {item.label}
+            {a.menu.enlaces.map((item, i) => (
+              <a key={i} href={item.enlace || "#"} className="text-sm font-medium hover:text-accent-dark transition" style={{ color: "var(--black)" }}>
+                {item.texto}
               </a>
             ))}
           </div>
@@ -247,7 +240,7 @@ export default async function Home() {
                 {c.equipos.texto}
               </p>
             </div>
-            <a href="https://crtonline.com.mx" target="_blank" rel="noopener" className="btn-outline-primary">
+            <a href={c.equipos.enlace || "https://crtonline.com.mx"} target="_blank" rel="noopener" className="btn-outline-primary">
               {c.equipos.boton}
               <ArrowRight size={16} weight="bold" />
             </a>
@@ -260,6 +253,8 @@ export default async function Home() {
                   <div
                     className="aspect-square bg-cover bg-center"
                     style={{ backgroundImage: `url('${p.img}')` }}
+                    role="img"
+                    aria-label={p.nombre}
                   />
                   <span className="tag-pill absolute top-3 left-3" style={{ background: p.color }}>
                     {p.tag}
@@ -273,7 +268,7 @@ export default async function Home() {
                     </a>
                     <a href={a.waLink} target="_blank" rel="noopener" className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full text-xs font-semibold uppercase text-white transition" style={{ background: p.color }}>
                       <WhatsappLogo size={14} weight="fill" />
-                      Cotizar
+                      {c.equipos.botonCotizar}
                     </a>
                   </div>
                 </div>
@@ -419,23 +414,16 @@ export default async function Home() {
             </div>
 
             <div className="md:col-span-3">
-              <p className="caption2 uppercase tracking-[2px] font-semibold text-white/50 mb-4">Catálogo</p>
+              <p className="caption2 uppercase tracking-[2px] font-semibold text-white/50 mb-4">{c.pie.tituloCatalogo}</p>
               <ul className="space-y-3">
-                {[
-                  { l: "Restaurantes", href: "/restaurante" },
-                  { l: "Cafeterías", href: "/cafeteria" },
-                  { l: "Panadería", href: "/panaderia" },
-                  { l: "Helados", href: "/heladeria" },
-                  { l: "Marcas", href: "#marcas" },
-                  { l: "Distribuidores", href: "/distribuidores" },
-                ].map(({ l, href }) => (
-                  <li key={l}><a href={href} className="caption1 text-white/75 hover:text-white transition">{l}</a></li>
+                {c.pie.enlaces.map(({ texto, enlace }, i) => (
+                  <li key={i}><a href={enlace || "#"} className="caption1 text-white/75 hover:text-white transition">{texto}</a></li>
                 ))}
               </ul>
             </div>
 
             <div className="md:col-span-4">
-              <p className="caption2 uppercase tracking-[2px] font-semibold text-white/50 mb-4">Contacto</p>
+              <p className="caption2 uppercase tracking-[2px] font-semibold text-white/50 mb-4">{c.pie.tituloContacto}</p>
               <ul className="space-y-3">
                 <li className="flex items-start gap-2 caption1 text-white/75">
                   <WhatsappLogo size={16} weight="fill" className="mt-0.5 flex-shrink-0" />
@@ -456,9 +444,9 @@ export default async function Home() {
           <div className="border-t border-white/10 mt-12 pt-6 flex flex-col md:flex-row justify-between gap-4 caption2 text-white/50">
             <span>{c.pie.derechos}</span>
             <div className="flex gap-6">
-              <a href="https://crtglobal.com.mx" className="hover:text-white transition">CRT Global</a>
-              <a href="https://crtonline.com.mx" className="hover:text-white transition">CRT Online</a>
-              <a href="#" className="hover:text-white transition">Aviso de privacidad</a>
+              {c.pie.legales.map(({ texto, enlace }, i) => (
+                <a key={i} href={enlace || "#"} className="hover:text-white transition">{texto}</a>
+              ))}
             </div>
           </div>
         </div>

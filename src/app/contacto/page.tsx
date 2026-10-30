@@ -40,7 +40,7 @@ export default async function ContactoPage() {
   ];
   return (
     <>
-      <Navbar activo="Contacto" />
+      <Navbar activo="/contacto" />
 
       {/* ====================== HERO ====================== */}
       <section className="relative pt-32 pb-16 lg:pt-40 lg:pb-20 overflow-hidden" style={{ background: "var(--surface)" }}>
@@ -58,11 +58,11 @@ export default async function ContactoPage() {
               <li>
                 <a href="/" className="flex items-center gap-1.5 hover:opacity-70 transition">
                   <House size={14} weight="duotone" />
-                  Inicio
+                  {c.hero.migaInicio}
                 </a>
               </li>
               <li><CaretRight size={12} weight="bold" style={{ color: "var(--secondary2)" }} /></li>
-              <li className="font-semibold" style={{ color: "var(--primary)" }}>Contacto</li>
+              <li className="font-semibold" style={{ color: "var(--primary)" }}>{c.hero.migaPagina}</li>
             </ol>
           </nav>
 
@@ -152,9 +152,9 @@ export default async function ContactoPage() {
 
               <div className="space-y-5 mb-8">
                 {[
-                  { icon: <MapPin size={20} weight="duotone" />, label: "Dirección", value: c.info.direccion },
-                  { icon: <Phone size={20} weight="duotone" />, label: "Teléfono", value: c.info.telefono },
-                  { icon: <Envelope size={20} weight="duotone" />, label: "Email", value: c.info.correo },
+                  { icon: <MapPin size={20} weight="duotone" />, label: c.info.direccionEtiqueta, value: c.info.direccion },
+                  { icon: <Phone size={20} weight="duotone" />, label: c.info.telefonoEtiqueta, value: c.info.telefono },
+                  { icon: <Envelope size={20} weight="duotone" />, label: c.info.correoEtiqueta, value: c.info.correo },
                 ].map((d, i) => (
                   <div key={i} className="flex items-start gap-4">
                     <div
@@ -220,22 +220,22 @@ export default async function ContactoPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="caption2 uppercase tracking-wider font-semibold block mb-2" style={{ color: "var(--secondary)" }}>
-                      Nombre
+                      {c.formulario.nombreEtiqueta}
                     </label>
                     <input
                       type="text"
-                      placeholder="Tu nombre"
+                      placeholder={c.formulario.nombreEjemplo}
                       className="w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-accent-dark transition"
                       style={{ borderColor: "var(--line)", background: "var(--surface)" }}
                     />
                   </div>
                   <div>
                     <label className="caption2 uppercase tracking-wider font-semibold block mb-2" style={{ color: "var(--secondary)" }}>
-                      Negocio
+                      {c.formulario.negocioEtiqueta}
                     </label>
                     <input
                       type="text"
-                      placeholder="Mi cafetería"
+                      placeholder={c.formulario.negocioEjemplo}
                       className="w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-accent-dark transition"
                       style={{ borderColor: "var(--line)", background: "var(--surface)" }}
                     />
@@ -245,22 +245,22 @@ export default async function ContactoPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="caption2 uppercase tracking-wider font-semibold block mb-2" style={{ color: "var(--secondary)" }}>
-                      Email
+                      {c.formulario.correoEtiqueta}
                     </label>
                     <input
                       type="email"
-                      placeholder="tu@email.com"
+                      placeholder={c.formulario.correoEjemplo}
                       className="w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-accent-dark transition"
                       style={{ borderColor: "var(--line)", background: "var(--surface)" }}
                     />
                   </div>
                   <div>
                     <label className="caption2 uppercase tracking-wider font-semibold block mb-2" style={{ color: "var(--secondary)" }}>
-                      Teléfono
+                      {c.formulario.telefonoEtiqueta}
                     </label>
                     <input
                       type="tel"
-                      placeholder="81 1234 5678"
+                      placeholder={c.formulario.telefonoEjemplo}
                       className="w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-accent-dark transition"
                       style={{ borderColor: "var(--line)", background: "var(--surface)" }}
                     />
@@ -269,29 +269,24 @@ export default async function ContactoPage() {
 
                 <div>
                   <label className="caption2 uppercase tracking-wider font-semibold block mb-2" style={{ color: "var(--secondary)" }}>
-                    Tipo de negocio
+                    {c.formulario.tipoEtiqueta}
                   </label>
                   <select
                     className="w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-accent-dark transition"
                     style={{ borderColor: "var(--line)", background: "var(--surface)" }}
                   >
-                    <option>Selecciona…</option>
-                    <option>Cafetería</option>
-                    <option>Restaurante</option>
-                    <option>Panadería</option>
-                    <option>Heladería</option>
-                    <option>Distribuidor</option>
-                    <option>Otro</option>
+                    <option>{c.formulario.tipoVacio}</option>
+                    {c.formulario.tipoOpciones.map((o, i) => <option key={i}>{o}</option>)}
                   </select>
                 </div>
 
                 <div>
                   <label className="caption2 uppercase tracking-wider font-semibold block mb-2" style={{ color: "var(--secondary)" }}>
-                    Mensaje
+                    {c.formulario.mensajeEtiqueta}
                   </label>
                   <textarea
                     rows={4}
-                    placeholder="Cuéntanos qué equipo necesitas…"
+                    placeholder={c.formulario.mensajeEjemplo}
                     className="w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-accent-dark transition resize-none"
                     style={{ borderColor: "var(--line)", background: "var(--surface)" }}
                   />

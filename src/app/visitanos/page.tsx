@@ -33,7 +33,7 @@ export default async function VisitanosPage() {
   const [c, a] = await Promise.all([contenido(visitanos), getAjustes()]);
   return (
     <>
-      <Navbar activo="Visítanos" />
+      <Navbar activo="/visitanos" />
 
       {/* ====================== HERO ====================== */}
       <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden" style={{ background: "var(--surface)" }}>
@@ -55,11 +55,11 @@ export default async function VisitanosPage() {
               <li>
                 <a href="/" className="flex items-center gap-1.5 hover:opacity-70 transition">
                   <House size={14} weight="duotone" />
-                  Inicio
+                  {c.hero.migaInicio}
                 </a>
               </li>
               <li><CaretRight size={12} weight="bold" style={{ color: "var(--secondary2)" }} /></li>
-              <li className="font-semibold" style={{ color: "var(--primary)" }}>Visítanos</li>
+              <li className="font-semibold" style={{ color: "var(--primary)" }}>{c.hero.migaPagina}</li>
             </ol>
           </nav>
 
@@ -96,9 +96,9 @@ export default async function VisitanosPage() {
               {/* Datos de contacto rápidos */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-12 pt-8 border-t" style={{ borderColor: "var(--line)" }}>
                 {[
-                  { icon: <MapPin size={20} weight="duotone" />, label: "Dirección", value: c.hero.direccion },
-                  { icon: <Clock size={20} weight="duotone" />, label: "Horario", value: c.hero.horario },
-                  { icon: <Phone size={20} weight="duotone" />, label: "Teléfono", value: c.hero.telefono },
+                  { icon: <MapPin size={20} weight="duotone" />, label: c.hero.direccionEtiqueta, value: c.hero.direccion },
+                  { icon: <Clock size={20} weight="duotone" />, label: c.hero.horarioEtiqueta, value: c.hero.horario },
+                  { icon: <Phone size={20} weight="duotone" />, label: c.hero.telefonoEtiqueta, value: c.hero.telefono },
                 ].map((d, i) => (
                   <div key={i} className="flex items-start gap-3">
                     <div
@@ -121,7 +121,7 @@ export default async function VisitanosPage() {
               <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl">
                 <img
                   src={c.hero.imagen}
-                  alt="Showroom CRT Profesional en Monterrey, Nuevo León"
+                  alt={c.hero.imagenAlt}
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 60%, rgba(10,37,64,0.9) 100%)" }} />
@@ -189,22 +189,22 @@ export default async function VisitanosPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="caption2 uppercase tracking-wider font-semibold block mb-2" style={{ color: "var(--secondary)" }}>
-                      Nombre
+                      {c.equipos.nombreEtiqueta}
                     </label>
                     <input
                       type="text"
-                      placeholder="Tu nombre"
+                      placeholder={c.equipos.nombreEjemplo}
                       className="w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-accent-dark transition"
                       style={{ borderColor: "var(--line)", background: "var(--surface)" }}
                     />
                   </div>
                   <div>
                     <label className="caption2 uppercase tracking-wider font-semibold block mb-2" style={{ color: "var(--secondary)" }}>
-                      Teléfono
+                      {c.equipos.telefonoEtiqueta}
                     </label>
                     <input
                       type="tel"
-                      placeholder="81 1234 5678"
+                      placeholder={c.equipos.telefonoEjemplo}
                       className="w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-accent-dark transition"
                       style={{ borderColor: "var(--line)", background: "var(--surface)" }}
                     />
@@ -213,23 +213,20 @@ export default async function VisitanosPage() {
 
                 <div>
                   <label className="caption2 uppercase tracking-wider font-semibold block mb-2" style={{ color: "var(--secondary)" }}>
-                    ¿Qué equipo te interesa probar?
+                    {c.equipos.interesEtiqueta}
                   </label>
                   <select
                     className="w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-accent-dark transition"
                     style={{ borderColor: "var(--line)", background: "var(--surface)" }}
                   >
-                    <option>Selecciona…</option>
-                    <option>Cafetería</option>
-                    <option>Restaurante</option>
-                    <option>Panadería</option>
-                    <option>Heladería</option>
+                    <option>{c.equipos.interesVacio}</option>
+                    {c.equipos.interesOpciones.map((o, i) => <option key={i}>{o}</option>)}
                   </select>
                 </div>
 
                 <div>
                   <label className="caption2 uppercase tracking-wider font-semibold block mb-2" style={{ color: "var(--secondary)" }}>
-                    Fecha preferida
+                    {c.equipos.fechaEtiqueta}
                   </label>
                   <input
                     type="date"
@@ -281,7 +278,7 @@ export default async function VisitanosPage() {
             />
             <div className="relative z-10 text-center text-white">
               <MapPin size={64} weight="duotone" style={{ color: "var(--accent-light)" }} className="mx-auto mb-4" />
-              <p className="heading4 mb-2">Monterrey, Nuevo León</p>
+              <p className="heading4 mb-2">{c.mapa.ciudad}</p>
               <p className="caption1 opacity-75 max-w-md">
                 {c.mapa.enlace ? <a href={c.mapa.enlace} target="_blank" rel="noopener" className="underline">{c.mapa.aviso}</a> : c.mapa.aviso}
               </p>
@@ -295,7 +292,7 @@ export default async function VisitanosPage() {
         <div className="container">
           <div className="max-w-2xl mx-auto text-center">
             <WhatsappLogo size={42} weight="duotone" style={{ color: "var(--accent-light)" }} className="mx-auto mb-5" />
-            <h2 className="heading2 mb-4 text-white">¿Prefieres avisar primero?</h2>
+            <h2 className="heading2 mb-4 text-white">{c.mapa.tituloFinal}</h2>
             <p className="body1 mb-8 text-white/75">
               {c.mapa.textoFinal}
             </p>

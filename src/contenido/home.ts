@@ -1,4 +1,4 @@
-import { pagina, grupo, lista, texto, area, imagen, lineas } from "@/lib/cms/campos";
+import { pagina, grupo, lista, texto, area, imagen, lineas, enlace } from "@/lib/cms/campos";
 import { seo } from "./comun";
 
 function vertical(etq: string, d: { nombre: string; desc: string; img: string; items: string }) {
@@ -53,6 +53,10 @@ export const home = pagina("home", "Inicio", {
     titulo: texto("Título", "Equipos destacados"),
     texto: area("Párrafo", "Los más cotizados por dueños de negocio en mayo 2026. Catálogo sin precios públicos — cotiza directo."),
     boton: texto("Botón «ver catálogo completo»", "Ver catálogo completo"),
+    enlace: enlace("A dónde lleva «ver catálogo completo»", "https://crtonline.com.mx"),
+    botonFicha: texto("Tarjeta · botón de ficha técnica", "Ficha PDF"),
+    botonTienda: texto("Tarjeta · botón a la tienda (si no hay ficha)", "Ver en tienda"),
+    botonCotizar: texto("Tarjeta · botón de WhatsApp", "Cotizar"),
     ejemplos: lista("Tarjetas de ejemplo (solo si no hay productos publicados)", {
       nombre: texto("Nombre"),
       tag: texto("Etiqueta"),
@@ -105,5 +109,26 @@ export const home = pagina("home", "Inicio", {
     correo: texto("Línea de correo", "profesional@crtglobal.com.mx"),
     direccion: texto("Línea de dirección", "Showroom flagship: Venustiano Carranza 650 Sur, Monterrey"),
     derechos: texto("Derechos", "© 2026 CRT Profesional · Grupo Criotec"),
+    tituloCatalogo: texto("Título de la columna de enlaces", "Catálogo"),
+    enlaces: lista("Enlaces de la columna «Catálogo»", {
+      texto: texto("Texto"),
+      enlace: enlace("A dónde lleva"),
+    }, [
+      { texto: "Restaurantes", enlace: "/restaurante" },
+      { texto: "Cafeterías", enlace: "/cafeteria" },
+      { texto: "Panadería", enlace: "/panaderia" },
+      { texto: "Helados", enlace: "/heladeria" },
+      { texto: "Marcas", enlace: "#marcas" },
+      { texto: "Distribuidores", enlace: "/distribuidores" },
+    ], { etiquetaItem: "enlace", max: 10 }),
+    tituloContacto: texto("Título de la columna de contacto", "Contacto"),
+    legales: lista("Enlaces de la última línea", {
+      texto: texto("Texto"),
+      enlace: enlace("A dónde lleva"),
+    }, [
+      { texto: "CRT Global", enlace: "https://crtglobal.com.mx" },
+      { texto: "CRT Online", enlace: "https://crtonline.com.mx" },
+      { texto: "Aviso de privacidad", enlace: "#" },
+    ], { etiquetaItem: "enlace", max: 5 }),
   }),
 });

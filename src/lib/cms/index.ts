@@ -9,7 +9,7 @@ import { mezclar, type Campos, type Pagina, type ValoresDe } from "./campos";
 
 // Dominio temporal en Hostinger de Mercanaut. Al migrar al servidor de CRT basta con
 // definir CMS_URL en Vercel.
-export const CMS_URL = (process.env.CMS_URL || "https://darkorange-guanaco-801707.hostingersite.com").replace(/\/$/, "");
+export const CMS_URL = (process.env.CMS_URL || "https://cms.crtpro.com.mx").replace(/\/$/, "");
 export const CMS_TAG = "cms";
 // El WordPress avisa al guardar (/api/revalidar), así que los cambios salen al momento;
 // esto es solo la red de seguridad. 5 minutos para no cargar el hosting compartido.

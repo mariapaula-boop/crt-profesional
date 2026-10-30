@@ -1,4 +1,4 @@
-import { pagina, grupo, texto, enlace } from "@/lib/cms/campos";
+import { pagina, grupo, lista, texto, enlace } from "@/lib/cms/campos";
 import { contenido } from "@/lib/cms";
 
 export const ajustes = pagina("ajustes", "Ajustes generales", {
@@ -19,6 +19,17 @@ export const ajustes = pagina("ajustes", "Ajustes generales", {
     marca1: texto("Logo · primera palabra", "CRT"),
     marca2: texto("Logo · segunda palabra", "Profesional"),
     boton: texto("Botón del menú", "Cotizar"),
+    enlaces: lista("Enlaces del menú", {
+      texto: texto("Texto"),
+      enlace: enlace("A dónde lleva", "", { ayuda: "Ruta del sitio (ej. /blog) o dirección completa." }),
+    }, [
+      { texto: "Restaurantes", enlace: "/restaurante" },
+      { texto: "Cafeterías", enlace: "/cafeteria" },
+      { texto: "Panadería", enlace: "/panaderia" },
+      { texto: "Helados", enlace: "/heladeria" },
+      { texto: "Distribuidores", enlace: "/distribuidores" },
+      { texto: "Blog", enlace: "/blog" },
+    ], { etiquetaItem: "enlace", max: 8 }),
   }),
   pie: grupo("Pie de página", {
     derechos: texto("Línea de derechos", "© 2026 CRT Profesional · Parte del Grupo CRT"),

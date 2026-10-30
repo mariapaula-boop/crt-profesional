@@ -43,6 +43,8 @@ export function giroPagina(id: string, titulo: string, url: string, d: Datos) {
       tarjetaTitulo: texto("Tarjeta sobre la foto · título", "Lorem"),
       tarjetaTexto: texto("Tarjeta sobre la foto · texto", "Lorem ipsum dolor sit amet"),
       insignia: texto("Insignia con estrella", "Lorem"),
+      migaInicio: texto("Ruta de navegación · primer paso", "Inicio", { ayuda: "La línea pequeña arriba del título (Inicio › Equipa tu negocio › giro)." }),
+      migaSeccion: texto("Ruta de navegación · segundo paso", "Equipa tu negocio"),
     }),
     categorias: grupo("Categorías de equipo", {
       etiqueta: texto("Texto pequeño", "Categorías de equipo"),
@@ -77,9 +79,24 @@ export function giroPagina(id: string, titulo: string, url: string, d: Datos) {
       texto: area("Párrafo", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."),
       boton: texto("Botón «ver catálogo»", "Ver catálogo"),
       enlace: enlace("A dónde lleva «ver catálogo»", "https://crtonline.com.mx"),
+      botonFicha: texto("Tarjeta · botón de ficha técnica", "Ficha"),
+      botonTienda: texto("Tarjeta · botón a la tienda (si no hay ficha)", "Ver"),
+      botonCotizar: texto("Tarjeta · botón de WhatsApp", "Cotizar"),
+      ejemplos: lista("Tarjetas de ejemplo (solo si no hay productos publicados)", {
+        nombre: texto("Nombre"),
+        tag: texto("Etiqueta"),
+        desc: area("Descripción"),
+        img: imagen("Foto", "", { ayuda: "Si se deja vacía, se usa la foto del encabezado." }),
+      }, [0, 1, 2, 3].map(() => ({
+        nombre: "Lorem Ipsum Dolor",
+        tag: "Lorem · ipsum",
+        desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor.",
+        img: d.imagen,
+      })), { etiquetaItem: "tarjeta", max: 4 }),
     }, { ayuda: "Las tarjetas son los productos PUBLICADOS con este giro (máx. 4). Si no hay, se ven tarjetas de ejemplo." }),
     showroom: grupo("Showroom", {
       imagen: imagen("Foto", d.showroomImg),
+      imagenAlt: texto("Descripción de la foto", "Showroom CRT Profesional en Monterrey, Nuevo León"),
       etiquetaFoto: texto("Recuadro sobre la foto · título", "Showroom"),
       ciudad: texto("Recuadro sobre la foto · ciudad", "Monterrey, Nuevo León"),
       etiqueta: texto("Texto pequeño", "Showroom Monterrey"),
@@ -100,6 +117,15 @@ export function giroPagina(id: string, titulo: string, url: string, d: Datos) {
       etiqueta: texto("Texto pequeño", "Blog y recursos"),
       titulo: texto("Título (antes de la palabra en color)", "Tips para tu"),
       boton: texto("Botón", "Ver blog completo"),
+      ejemplos: lista("Tarjetas de ejemplo (solo si no hay artículos)", {
+        categoria: texto("Categoría"),
+        titulo: texto("Título"),
+        fecha: texto("Fecha"),
+      }, ["sed do eiusmod", "ut labore", "quis nostrud"].map((fin) => ({
+        categoria: "Lorem",
+        titulo: `Lorem ipsum dolor sit amet, consectetur adipiscing elit ${fin}.`,
+        fecha: "Por publicar · —",
+      })), { etiquetaItem: "tarjeta", max: 3 }),
     }, { ayuda: "Las tarjetas son los 3 artículos más recientes del blog; si no hay, se ven de ejemplo." }),
     cta: grupo("Llamado final", {
       titulo: texto("Título (antes de la palabra en color)", "Cotiza tu"),

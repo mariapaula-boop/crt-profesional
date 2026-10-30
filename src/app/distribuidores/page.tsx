@@ -51,7 +51,7 @@ export default async function DistribuidoresPage() {
   const proceso = c.proceso.pasos.map((p, i) => ({ ...p, n: iconosPasos[i % iconosPasos.length] }));
   return (
     <>
-      <Navbar activo="Distribuidores" />
+      <Navbar activo="/distribuidores" />
 
       {/* ====================== HERO ====================== */}
       <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden" style={{ background: "var(--surface)" }}>
@@ -73,11 +73,11 @@ export default async function DistribuidoresPage() {
               <li>
                 <a href="/" className="flex items-center gap-1.5 hover:opacity-70 transition">
                   <House size={14} weight="duotone" />
-                  Inicio
+                  {c.hero.migaInicio}
                 </a>
               </li>
               <li><CaretRight size={12} weight="bold" style={{ color: "var(--secondary2)" }} /></li>
-              <li className="font-semibold" style={{ color: "var(--primary)" }}>Distribuidores</li>
+              <li className="font-semibold" style={{ color: "var(--primary)" }}>{c.hero.migaPagina}</li>
             </ol>
           </nav>
 
@@ -229,7 +229,7 @@ export default async function DistribuidoresPage() {
                   style={{ background: "var(--accent)", color: "white" }}
                 >
                   <WhatsappLogo size={12} weight="fill" />
-                  WhatsApp
+                  {c.requisitos.dudasBoton}
                 </a>
               </div>
             </div>
@@ -259,22 +259,22 @@ export default async function DistribuidoresPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="caption2 uppercase tracking-wider font-semibold block mb-2" style={{ color: "var(--secondary)" }}>
-                      Nombre comercial
+                      {c.requisitos.comercialEtiqueta}
                     </label>
                     <input
                       type="text"
-                      placeholder="Mi negocio"
+                      placeholder={c.requisitos.comercialEjemplo}
                       className="w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-accent-dark transition"
                       style={{ borderColor: "var(--line)", background: "var(--surface)" }}
                     />
                   </div>
                   <div>
                     <label className="caption2 uppercase tracking-wider font-semibold block mb-2" style={{ color: "var(--secondary)" }}>
-                      Nombre del contacto
+                      {c.requisitos.contactoEtiqueta}
                     </label>
                     <input
                       type="text"
-                      placeholder="Tu nombre"
+                      placeholder={c.requisitos.contactoEjemplo}
                       className="w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-accent-dark transition"
                       style={{ borderColor: "var(--line)", background: "var(--surface)" }}
                     />
@@ -284,22 +284,22 @@ export default async function DistribuidoresPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="caption2 uppercase tracking-wider font-semibold block mb-2" style={{ color: "var(--secondary)" }}>
-                      Email
+                      {c.requisitos.correoEtiqueta}
                     </label>
                     <input
                       type="email"
-                      placeholder="ventas@minegocio.com"
+                      placeholder={c.requisitos.correoEjemplo}
                       className="w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-accent-dark transition"
                       style={{ borderColor: "var(--line)", background: "var(--surface)" }}
                     />
                   </div>
                   <div>
                     <label className="caption2 uppercase tracking-wider font-semibold block mb-2" style={{ color: "var(--secondary)" }}>
-                      Teléfono
+                      {c.requisitos.telefonoEtiqueta}
                     </label>
                     <input
                       type="tel"
-                      placeholder="81 1234 5678"
+                      placeholder={c.requisitos.telefonoEjemplo}
                       className="w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-accent-dark transition"
                       style={{ borderColor: "var(--line)", background: "var(--surface)" }}
                     />
@@ -308,11 +308,11 @@ export default async function DistribuidoresPage() {
 
                 <div>
                   <label className="caption2 uppercase tracking-wider font-semibold block mb-2" style={{ color: "var(--secondary)" }}>
-                    Estado / zona donde operas
+                    {c.requisitos.zonaEtiqueta}
                   </label>
                   <input
                     type="text"
-                    placeholder="Nuevo León"
+                    placeholder={c.requisitos.zonaEjemplo}
                     className="w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-accent-dark transition"
                     style={{ borderColor: "var(--line)", background: "var(--surface)" }}
                   />
@@ -320,11 +320,11 @@ export default async function DistribuidoresPage() {
 
                 <div>
                   <label className="caption2 uppercase tracking-wider font-semibold block mb-2" style={{ color: "var(--secondary)" }}>
-                    Cuéntanos de tu negocio
+                    {c.requisitos.mensajeEtiqueta}
                   </label>
                   <textarea
                     rows={3}
-                    placeholder="¿Qué equipo distribuyes hoy? ¿A qué sector apuntas?"
+                    placeholder={c.requisitos.mensajeEjemplo}
                     className="w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:border-accent-dark transition resize-none"
                     style={{ borderColor: "var(--line)", background: "var(--surface)" }}
                   />

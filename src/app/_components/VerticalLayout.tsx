@@ -58,11 +58,11 @@ export default function VerticalLayout({ verticalActiva, pillIcon, iconos, c, a,
               <li>
                 <a href="/" className="flex items-center gap-1.5 hover:opacity-70 transition">
                   <House size={14} weight="duotone" />
-                  Inicio
+                  {c.hero.migaInicio}
                 </a>
               </li>
               <li><CaretRight size={12} weight="bold" style={{ color: "var(--secondary2)" }} /></li>
-              <li>Equipa tu negocio</li>
+              <li>{c.hero.migaSeccion}</li>
               <li><CaretRight size={12} weight="bold" style={{ color: "var(--secondary2)" }} /></li>
               <li className="font-semibold capitalize" style={{ color: "var(--primary)" }}>{h1Word}</li>
             </ol>
@@ -307,7 +307,7 @@ export default function VerticalLayout({ verticalActiva, pillIcon, iconos, c, a,
                         className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition hover:opacity-90"
                         style={{ background: "var(--surface)", color: "var(--primary)" }}
                       >
-                        <FileText size={11} weight="bold" /> {p.ficha ? "Ficha" : "Ver"}
+                        <FileText size={11} weight="bold" /> {p.ficha ? c.equipos.botonFicha : c.equipos.botonTienda}
                       </a>
                     )}
                     <a
@@ -317,31 +317,31 @@ export default function VerticalLayout({ verticalActiva, pillIcon, iconos, c, a,
                       className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition hover:opacity-90"
                       style={{ background: "var(--accent)", color: "white" }}
                     >
-                      <WhatsappLogo size={11} weight="fill" /> Cotizar
+                      <WhatsappLogo size={11} weight="fill" /> {c.equipos.botonCotizar}
                     </a>
                   </div>
                 </div>
               </article>
             )) : (
-            [0, 1, 2, 3].map((i) => (
+            c.equipos.ejemplos.map((e, i) => (
               <article
                 key={i}
                 className="group rounded-2xl overflow-hidden transition hover:-translate-y-1 hover:shadow-xl bg-white"
                 style={{ border: "1px solid var(--line)" }}
               >
                 <div className="aspect-square overflow-hidden relative" style={{ background: "var(--surface)" }}>
-                  <img src={c.hero.imagen} alt="Lorem ipsum" loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                  <img src={e.img || c.hero.imagen} alt={e.nombre} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
                   <span
                     className="absolute top-3 left-3 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full"
                     style={{ background: i === 0 ? "var(--accent)" : "var(--primary)", color: "white" }}
                   >
-                    Lorem · ipsum
+                    {e.tag}
                   </span>
                 </div>
                 <div className="p-5">
-                  <h3 className="text-title font-bold mb-2" style={{ color: "var(--primary)" }}>Lorem Ipsum Dolor</h3>
+                  <h3 className="text-title font-bold mb-2" style={{ color: "var(--primary)" }}>{e.nombre}</h3>
                   <p className="caption2 leading-snug mb-4" style={{ color: "var(--secondary)" }}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor.
+                    {e.desc}
                   </p>
                   <div className="flex gap-2">
                     <a
@@ -349,14 +349,14 @@ export default function VerticalLayout({ verticalActiva, pillIcon, iconos, c, a,
                       className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition hover:opacity-90"
                       style={{ background: "var(--surface)", color: "var(--primary)" }}
                     >
-                      <FileText size={11} weight="bold" /> Ficha
+                      <FileText size={11} weight="bold" /> {c.equipos.botonFicha}
                     </a>
                     <a
                       href="#"
                       className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition hover:opacity-90"
                       style={{ background: "var(--accent)", color: "white" }}
                     >
-                      <WhatsappLogo size={11} weight="fill" /> Cotizar
+                      <WhatsappLogo size={11} weight="fill" /> {c.equipos.botonCotizar}
                     </a>
                   </div>
                 </div>
@@ -375,7 +375,7 @@ export default function VerticalLayout({ verticalActiva, pillIcon, iconos, c, a,
               <div className="aspect-[5/4] rounded-3xl overflow-hidden shadow-xl">
                 <img
                   src={c.showroom.imagen}
-                  alt="Showroom CRT Profesional en Monterrey, Nuevo León"
+                  alt={c.showroom.imagenAlt}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -496,7 +496,7 @@ export default function VerticalLayout({ verticalActiva, pillIcon, iconos, c, a,
                 </div>
               </a>
             )) : (
-            [0, 1, 2].map((i) => (
+            c.blog.ejemplos.map((e, i) => (
               <a
                 key={i}
                 href="#"
@@ -504,13 +504,13 @@ export default function VerticalLayout({ verticalActiva, pillIcon, iconos, c, a,
                 style={{ border: "1px solid var(--line)" }}
               >
                 <span className="inline-block text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full mb-4" style={{ background: "rgba(6,182,212,0.12)", color: "var(--accent-dark)" }}>
-                  Lorem
+                  {e.categoria}
                 </span>
                 <h3 className="heading6 mb-4 leading-tight group-hover:opacity-80 transition" style={{ color: "var(--primary)" }}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit {i === 0 ? "sed do eiusmod" : i === 1 ? "ut labore" : "quis nostrud"}.
+                  {e.titulo}
                 </h3>
                 <div className="flex items-center justify-between pt-4 border-t" style={{ borderColor: "var(--line)" }}>
-                  <span className="caption2" style={{ color: "var(--secondary)" }}>Por publicar · —</span>
+                  <span className="caption2" style={{ color: "var(--secondary)" }}>{e.fecha}</span>
                   <CaretRight size={14} weight="bold" style={{ color: "var(--primary)" }} />
                 </div>
               </a>

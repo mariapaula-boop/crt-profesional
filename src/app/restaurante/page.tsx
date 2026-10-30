@@ -42,7 +42,7 @@ export default async function RestaurantePage() {
   const [c, a, productos, posts] = await Promise.all([contenido(pagina), getAjustes(), productosDelGiro("Restaurante"), getPostsCms().then((p) => p ?? [])]);
   return (
     <VerticalLayout
-      verticalActiva="Restaurantes"
+      verticalActiva="/restaurante"
       pillIcon={<ForkKnife size={14} weight="fill" />}
       iconos={iconos}
       c={c}
